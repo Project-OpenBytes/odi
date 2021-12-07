@@ -1,7 +1,12 @@
 # IDE
 .idea/
 .vscode/
+*.iml
 
 # OS
 .DS_Store
 __MACOSX/
+
+# server
+server/.gradle
+server/build
