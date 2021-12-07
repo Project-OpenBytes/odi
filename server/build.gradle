@@ -1,0 +1,36 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "io.freefair.lombok" version "6.3.0"
+    id 'java'
+}
+
+group 'io.openBytes'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.1'
+
+    // spring
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.1'
+
+    // skywalking
+    implementation 'org.apache.skywalking:apm-toolkit-trace:8.8.0'
+
+    // swagger
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+
+    // logs
+    implementation 'org.codehaus.janino:janino:3.1.6'
+}
+
+test {
+    useJUnitPlatform()
+}
