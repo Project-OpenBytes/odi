@@ -23,3 +23,9 @@ jobs:
           distribution: 'adopt'
       - name: Build with Gradle
         run: gradle build -p server
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
