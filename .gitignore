@@ -10,3 +10,6 @@ __MACOSX/
 # server
 server/.gradle
 server/build
+
+# python-sdk
+__pycache__/
