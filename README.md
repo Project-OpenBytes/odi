@@ -3,3 +3,4 @@ This is the repository contains everything you can find in datasets.openBytes.io
 
 
 [![Build](https://github.com/Project-OpenBytes/odi/actions/workflows/java_ci.yml/badge.svg)](https://github.com/Project-OpenBytes/odi/actions/workflows/java_ci.yml)
+[![Build](https://github.com/Project-OpenBytes/odi/actions/workflows/python_sdk_ci.yml/badge.svg)](https://github.com/Project-OpenBytes/odi/actions/workflows/python_sdk_ci.yml)
