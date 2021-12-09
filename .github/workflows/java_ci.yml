@@ -23,3 +23,5 @@ jobs:
           distribution: 'adopt'
       - name: Build with Gradle
         run: gradle build -p server
+
+
