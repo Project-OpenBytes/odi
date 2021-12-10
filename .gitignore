@@ -9,7 +9,11 @@ __MACOSX/
 
 # server
 server/.gradle
+server/.gradle/
+server/gradle/
 server/build
+server/gradlew
+server/gradlew.bat
 
 # python-sdk
 __pycache__/
