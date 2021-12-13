@@ -16,4 +16,6 @@ server/gradlew
 server/gradlew.bat
 
 # python-sdk
+.pytest_cache/
 __pycache__/
+.coverage

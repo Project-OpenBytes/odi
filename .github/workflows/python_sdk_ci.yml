@@ -42,10 +42,10 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Test with pytest
-        run: pytest odi
+        run: pytest python-sdk
       - name: Test with pytest and upload coverage data to coveralls.io
         run: |
-          pytest odi --cov
+          pytest python-sdk --cov
           coveralls --service=github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
