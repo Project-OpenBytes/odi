@@ -1,2 +1,2 @@
 def test_ci():
-    pass
+    assert True == True
