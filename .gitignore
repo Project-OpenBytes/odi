@@ -8,14 +8,18 @@
 __MACOSX/
 
 # server
-server/.gradle
 server/.gradle/
 server/gradle/
-server/build
+server/build/
 server/gradlew
 server/gradlew.bat
 
 # python-sdk
+*.egg
+*.egg-info/
+*.build/
+*.coverage
 .pytest_cache/
 __pycache__/
-.coverage
+build/
+dist/
