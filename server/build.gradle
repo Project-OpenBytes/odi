@@ -16,9 +16,10 @@ repositories {
 }
 
 dependencies {
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
+    testImplementation 'junit:junit:4.12'
 
     testImplementation "org.springframework.boot:spring-boot-starter-test:2.6.1"
+    testImplementation 'com.baomidou:mybatis-plus-boot-starter-test:3.4.3.1'
 
     // spring
     implementation "org.springframework.boot:spring-boot-starter-web:2.6.1"
@@ -31,6 +32,17 @@ dependencies {
 
     // logs
     implementation "org.codehaus.janino:janino:3.1.6"
+
+    // hutool
+    implementation 'cn.hutool:hutool-all:5.7.17'
+
+    // mybatis
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
+    implementation 'com.baomidou:mybatis-plus-boot-starter:3.4.3.1'
+    runtimeOnly 'mysql:mysql-connector-java'
+
+    implementation 'org.flywaydb:flyway-core:6.1.0'
+
 }
 
 // for code coverage
