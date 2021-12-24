@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2021 GRAVITI. All rights reserved.
- * Contents cannot be copied or distributed without the permission of GRAVITI.
- */
-
 package io.openbytes.odi.interfaces;
 
 import io.openbytes.odi.CodeAndMessage;
