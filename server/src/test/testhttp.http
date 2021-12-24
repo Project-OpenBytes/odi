@@ -1,0 +1,3 @@
+### GET request with parameter
+GET http://localhost:8080/api/dataset/v1/get-by-name?name=nuScenes
+Accept: application/json

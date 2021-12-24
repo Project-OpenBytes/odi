@@ -1,0 +1,124 @@
+<configuration>
+
+    <property name="logging-home" value="/var/log/ODI-SERVER/"/>
+
+    <appender name="std-console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <Pattern>
+                    {"ts":"%d{yyyy-MM-dd
+                    HH:mm:ss.SSS}","thread":"%t","level":"%p","c":"%C{36}","m":"%M","tid":"%tid","msg":"%m"}%n
+                </Pattern>
+            </layout>
+        </encoder>
+    </appender>
+    <appender name="access-console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <Pattern>
+                    {"ts":"%d{yyyy-MM-dd
+                    HH:mm:ss.SSS}","thread":"%t","level":"%p","tid":"%tid","ip":"%X{remoteip}","method":"%X{method}","uri":"%X{uri}","code":"%X{code}","duration":"%X{duration}","msg":"%msg"}%n
+                </Pattern>
+            </layout>
+        </encoder>
+    </appender>
+    <appender name="metrics-console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <Pattern>
+                    {"ts":"%d{yyyy-MM-dd
+                    HH:mm:ss.SSS}","thread":"%t","level":"%p","c":"%C{36}","m":"%M","tid":"%tid","msg":"%msg"}%n
+                </Pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <springProfile name="local">
+        <root level="info">
+            <appender-ref ref="std-console"/>
+        </root>
+        <logger name="accessLog" additivity="false" level="INFO">
+            <appender-ref ref="access-console"/>
+        </logger>
+        <logger name="metricsLog" additivity="false" level="INFO">
+            <appender-ref ref="metrics-console"/>
+        </logger>
+        <logger name="stdLog" additivity="false" level="INFO">
+            <appender-ref ref="std-console"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="online">
+
+        <appender name="std-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${logging-home}/runtime.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${logging-home}/runtime.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
+                <MaxHistory>15</MaxHistory>
+                <maxFileSize>100MB</maxFileSize>
+                <totalSizeCap>15GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                    <Pattern>
+                        {"ts":"%d{yyyy-MM-dd
+                        HH:mm:ss.SSS}","thread":"%t","level":"%p","c":"%C{36}","m":"%M","tid":"%tid","msg":"%m"}%n
+                    </Pattern>
+                </layout>
+            </encoder>
+        </appender>
+        <appender name="access-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${logging-home}/access.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${logging-home}/access.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
+                <MaxHistory>15</MaxHistory>
+                <maxFileSize>100MB</maxFileSize>
+                <totalSizeCap>15GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                    <Pattern>
+                        {"ts":"%d{yyyy-MM-dd
+                        HH:mm:ss.SSS}","thread":"%t","level":"%p","tid":"%tid","ip":"%X{remoteip}","method":"%X{method}","uri":"%X{uri}","code":"%X{code}","duration":"%X{duration}","msg":"%msg"}%n
+                    </Pattern>
+                </layout>
+            </encoder>
+        </appender>
+        <appender name="metrics-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${logging-home}/metrics.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${logging-home}/metrics.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
+                <MaxHistory>15</MaxHistory>
+                <maxFileSize>100MB</maxFileSize>
+                <totalSizeCap>15GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                    <Pattern>
+                        {"ts":"%d{yyyy-MM-dd
+                        HH:mm:ss.SSS}","thread":"%t","level":"%p","c":"%C{36}","m":"%M","tid":"%tid","msg":"%msg"}%n
+                    </Pattern>
+                </layout>
+            </encoder>
+        </appender>
+
+        <root level="info">
+            <appender-ref ref="std-console"/>
+            <appender-ref ref="std-file"/>
+        </root>
+        <logger name="accessLog" additivity="false" level="INFO">
+            <appender-ref ref="access-console"/>
+            <appender-ref ref="access-file"/>
+        </logger>
+        <logger name="metricsLog" additivity="false" level="INFO">
+            <appender-ref ref="metrics-console"/>
+            <appender-ref ref="metrics-file"/>
+        </logger>
+        <logger name="stdLog" additivity="false" level="INFO">
+            <appender-ref ref="std-console"/>
+            <appender-ref ref="std-file"/>
+        </logger>
+
+    </springProfile>
+
+</configuration>
