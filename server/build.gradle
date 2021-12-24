@@ -48,14 +48,6 @@ dependencies {
 
 }
 
-// for code coverage
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled false
-    }
-}
-
 test {
     useJUnitPlatform()
 }

@@ -7,21 +7,6 @@ import lombok.ToString;
 
 import java.time.Instant;
 
-/**
- * private String id;
- * private String name;
- * private String homepage;
- * private String description;
- * private String readmeLink;
- * private Instant createdAt;
- * private Instant updatedAt;
- * private String ownerName;
- * private String creatorUserId;
- * private String creatorOrgId;
- * private Integer viewCount;
- * private Integer starCount;
- * private Integer downloadCount;
- */
 @Getter
 @ToString
 public class Dataset {
