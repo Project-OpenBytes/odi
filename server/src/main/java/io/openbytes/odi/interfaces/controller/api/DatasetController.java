@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.util.Optional;
 
 @Api(tags = "【web】Dataset")
-@RequestMapping("/api/dataset")
+@RequestMapping("/api/v1/datasets")
 @RestController
 public class DatasetController {
 
@@ -21,13 +21,14 @@ public class DatasetController {
     private DatasetService service;
 
 
-    @ApiOperation(value = "Get an Dataset by name", notes = "When name not exist, return empty.")
-    @GetMapping("/v1/get-by-name")
-    public Result<Optional<DatasetVO>> getByName(String name) {
-        if (name == null) {
-            name = "";
+    @ApiOperation(value = "Get an Dataset by id", notes = "When id not exist, return empty.")
+    @GetMapping("/{id}")
+    public Result<Optional<DatasetVO>> getById(String id) {
+        if (id == null) {
+            id = "";
         }
 
-        return Result.ok(service.getByName(name));
+        return Result.ok(service.getById(id));
     }
+
 }
