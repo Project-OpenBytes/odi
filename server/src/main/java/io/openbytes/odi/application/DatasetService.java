@@ -18,6 +18,16 @@ public class DatasetService {
 
     public Optional<DatasetVO> getByName(String name) {
         Optional<Dataset> optionalDataset = datasetRepository.getByName(name);
+        if (!optionalDataset.isPresent()) {
+            return Optional.empty();
+        }
+
+        DatasetVO datasetVO = assembleVo(optionalDataset.get());
+        return Optional.of(datasetVO);
+    }
+
+   public Optional<DatasetVO> getById(String id) {
+        Optional<Dataset> optionalDataset = datasetRepository.get(id);
         if (optionalDataset.isEmpty()) {
             return Optional.empty();
         }
