@@ -26,7 +26,7 @@ public class DatasetService {
         return Optional.of(datasetVO);
     }
 
-   public Optional<DatasetVO> getById(String id) {
+    public Optional<DatasetVO> getById(String id) {
         Optional<Dataset> optionalDataset = datasetRepository.get(id);
         if (optionalDataset.isEmpty()) {
             return Optional.empty();
@@ -35,7 +35,6 @@ public class DatasetService {
         DatasetVO datasetVO = assembleVo(optionalDataset.get());
         return Optional.of(datasetVO);
     }
-
 
     private DatasetVO assembleVo(Dataset dataset) {
         return DatasetVO.fromDO(dataset);

@@ -46,6 +46,10 @@ dependencies {
 
     implementation 'org.flywaydb:flyway-core:6.1.0'
 
+    // s3
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.131'
+
+
 }
 
 test {

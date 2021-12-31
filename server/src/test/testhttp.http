@@ -1,3 +1,7 @@
 ### GET request with parameter
 GET http://localhost:8080/api/v1/datasets/1
 Accept: application/json
+
+### GET request with parameter
+GET http://localhost:8080/api/v1/datasets/MINIST/files
+Accept: application/json
