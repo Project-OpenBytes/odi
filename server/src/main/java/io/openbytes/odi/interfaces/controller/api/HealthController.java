@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
 
-@Api(tags = "【Web】Health")
+@Api(tags = "[Web] Health")
 @RequestMapping("/health")
 @RestController
 public class HealthController {
