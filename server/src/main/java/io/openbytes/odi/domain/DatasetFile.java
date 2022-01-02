@@ -23,12 +23,16 @@ public class DatasetFile {
 
     private Long size;
 
-    //todo need to add a function to set this
+    /*
+    file downloaded url
+     */
     private String url;
 
-    public DatasetFile(String name, String fullPath, Long size) {
+    public DatasetFile(String name, String fullPath, Long size, String url) {
         this.name = name;
         this.fullPath = fullPath;
         this.size = size;
+        this.url = url;
     }
+
 }
