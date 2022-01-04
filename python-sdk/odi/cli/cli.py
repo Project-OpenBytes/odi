@@ -37,14 +37,8 @@ def cli(ctx: click.Context) -> None:
 
 @cli.command()
 @click.pass_obj
-def download(ctx: str) -> None:
-    print("download")
-
-
-@cli.command()
-@click.pass_obj
-def get(ctx: str) -> None:
-    print("get")
+def auth(ctx: str) -> None:
+    print("login")
 
 
 @cli.command()
@@ -55,8 +49,15 @@ def init(ctx: str) -> None:
 
 @cli.command()
 @click.pass_obj
-def login(ctx: str) -> None:
-    print("login")
+def pull(ctx: str) -> None:
+    from odi.cli.command.pull import implement_pull
+    implement_pull()
+
+
+@cli.command()
+@click.pass_obj
+def push(ctx: str) -> None:
+    print("get")
 
 
 @cli.command()
@@ -67,21 +68,9 @@ def search(ctx: str) -> None:
 
 @cli.command()
 @click.pass_obj
-def upload(ctx: str) -> None:
-    print("upload")
-
-
-@cli.command()
-@click.pass_obj
 def version(ctx: str) -> None:
     print(__version__)
 
 
-@cli.command()
-@click.pass_obj
-def wai(ctx: str) -> None:
-    print("who am i")
-
-
 if __name__ == "__main__":
-    cli()
+    cli(prog_name="odi")
