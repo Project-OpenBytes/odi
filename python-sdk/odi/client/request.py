@@ -1,5 +1,9 @@
-from typing import Dict, Callable, List, Any
 
+import os.path
+from enum import Enum, unique
+from urllib.parse import urljoin
+
+from requests import Session
 from requests.models import Response
 
 
@@ -8,47 +12,47 @@ class _HTTPMethod:
     POST = "POST"
 
 
-class _Request:
-    pass
-
-class HealthCheckRequest(_Request):
-    pass
-
-class HealthCheckRequest2(_Request):
-    pass
+@unique
+class Request(Enum):
+    HealthCheck = "health_check"
+    PullDatasetByName = "pull_dataset_by_name"
 
 
-class URLBuilder:
-    def __init__(self):
+class _URLBuilder:
+    _API_VERSION = "v1"
+
+    def __init__(self) -> None:
+        self._common_request_prefix = "/api/" + self._API_VERSION + "/"
+        self._dataset_request_prefix = self._common_request_prefix + "datasets/"
+
         self._builder = {
-            _Request: print,
-            HealthCheckRequest: self._build_health_check_url,
-            HealthCheckRequest2: self._build_health_check_url,
+            Request.HealthCheck: self._health_check,
+            Request.PullDatasetByName: self._pull_dataset_by_name
         }
 
-    def _build_health_check_url(self) -> str:
-        return "3333"
+    @staticmethod
+    def _health_check(**kwargs) -> str:
+        return "/health/check/"
 
-    def build(self, req: Any) -> str:
-        return self._builder[req]()
+    def _pull_dataset_by_name(self, **kwargs) -> str:
+        return urljoin(self._dataset_request_prefix, os.path.join(kwargs["dataset"], "files/"))
+
+    def build(self, req: Request, **kwargs) -> str:
+        return self._builder[req](**kwargs)
+
+    def version(self) -> str:
+        return self._API_VERSION
 
 
 class Client:
-    _DEFAULT_URL = "https://gas.graviti.cn/"
 
     def __init__(self) -> None:
-        self._url_builder = URLBuilder()
+        self._url_builder = _URLBuilder()
 
-    def _make_url(self) -> str:
-        return ""
+    def _make_url(self, req: Request, **kwargs) -> str:
+        return self._url_builder.build(req, **kwargs)
 
-    def request_to_url(self):
-        return self._url_builder.build(HealthCheckRequest)
-
-    def do(self, req, **kwargs) -> Response:
-        return None
-
-
-if __name__ == "__main__":
-    c = Client()
-    print(c.request_to_url())
+    def do(self, req: Request, **kwargs) -> Response:
+        url = urljoin(self._HOME, self._make_url(req, **kwargs))
+        resp = Session().request(method=_HTTPMethod.GET, url=url)
+        return resp

@@ -48,10 +48,14 @@ def init(ctx: str) -> None:
 
 
 @cli.command()
+@click.argument("dataset", type=str)
+@click.option(
+    "-p", "--path", type=str, default="", help="Path to pull the dataset"
+)
 @click.pass_obj
-def pull(ctx: str) -> None:
+def pull(ctx: str, dataset: str, path: str) -> None:
     from odi.cli.command.pull import implement_pull
-    implement_pull()
+    implement_pull(dataset, path)
 
 
 @cli.command()
