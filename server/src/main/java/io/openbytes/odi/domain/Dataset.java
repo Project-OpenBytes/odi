@@ -18,6 +18,7 @@ package io.openbytes.odi.domain;
 
 import cn.hutool.core.util.RandomUtil;
 import io.openbytes.odi.domain.common.HttpURL;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -25,6 +26,7 @@ import java.time.Instant;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 public class Dataset {
     private final static int ID_LENGTH = 14;
 
@@ -57,6 +59,20 @@ public class Dataset {
     public Dataset(String name, HttpURL homepage, String description, HttpURL readmeLink, Instant createdAt, Instant updatedAt,
                    String ownerName, String creatorUserId, String creatorOrgId) {
         this.id = RandomUtil.randomString(ID_LENGTH).toUpperCase();
+        this.name = name;
+        this.homepage = homepage;
+        this.description = description;
+        this.readmeLink = readmeLink;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.OwnerName = ownerName;
+        this.creatorUserId = creatorUserId;
+        this.creatorOrgId = creatorOrgId;
+    }
+
+    public Dataset(String id, String name, HttpURL homepage, String description, HttpURL readmeLink, Instant createdAt, Instant updatedAt,
+                   String ownerName, String creatorUserId, String creatorOrgId) {
+        this.id = id;
         this.name = name;
         this.homepage = homepage;
         this.description = description;

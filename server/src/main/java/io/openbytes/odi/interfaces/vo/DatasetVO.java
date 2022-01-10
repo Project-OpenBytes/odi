@@ -17,9 +17,11 @@
 package io.openbytes.odi.interfaces.vo;
 
 import io.openbytes.odi.domain.Dataset;
+import lombok.EqualsAndHashCode;
 
 import java.time.Instant;
 
+@EqualsAndHashCode
 public class DatasetVO {
     public String id;
     public String name;

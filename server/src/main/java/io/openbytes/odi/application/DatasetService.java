@@ -34,26 +34,20 @@ public class DatasetService {
 
     public Optional<DatasetVO> getByName(String name) {
         Optional<Dataset> optionalDataset = datasetRepository.getByName(name);
-        if (!optionalDataset.isPresent()) {
-            return Optional.empty();
-        }
-
-        DatasetVO datasetVO = assembleVo(optionalDataset.get());
-        return Optional.of(datasetVO);
+        return assembleVo(optionalDataset);
     }
 
     public Optional<DatasetVO> getById(String id) {
         Optional<Dataset> optionalDataset = datasetRepository.get(id);
-        if (optionalDataset.isEmpty()) {
+        return assembleVo(optionalDataset);
+    }
+
+    private Optional<DatasetVO> assembleVo(Optional<Dataset> dataset) {
+        if (dataset.isEmpty()) {
             return Optional.empty();
         }
 
-        DatasetVO datasetVO = assembleVo(optionalDataset.get());
-        return Optional.of(datasetVO);
-    }
-
-    private DatasetVO assembleVo(Dataset dataset) {
-        return DatasetVO.fromDO(dataset);
+        return Optional.of(DatasetVO.fromDO(dataset.get()));
     }
 
 

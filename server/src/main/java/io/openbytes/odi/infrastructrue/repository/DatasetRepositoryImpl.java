@@ -16,6 +16,7 @@
 
 package io.openbytes.odi.infrastructrue.repository;
 
+import cn.hutool.core.util.StrUtil;
 import io.openbytes.odi.domain.Dataset;
 import io.openbytes.odi.domain.common.HttpURL;
 import io.openbytes.odi.domain.repository.DatasetRepository;
@@ -36,11 +37,17 @@ public class DatasetRepositoryImpl implements DatasetRepository {
 
     @Override
     public Optional<Dataset> get(String id) {
+        if (StrUtil.isEmpty(id)) {
+            return Optional.empty();
+        }
         return assemble(datasetMapper.selectByIdOptional(id));
     }
 
     @Override
     public Optional<Dataset> getByName(String name) {
+        if (StrUtil.isEmpty(name)) {
+            return Optional.empty();
+        }
         return assemble(datasetMapper.selectOneByNameOptional(name));
     }
 
@@ -64,7 +71,7 @@ public class DatasetRepositoryImpl implements DatasetRepository {
     private Dataset fromPO(DatasetPO po) {
         HttpURL homepage = po.getHomepage() == null ? null : new HttpURL(po.getHomepage());
         HttpURL readmeLink = po.getReadmeLink() == null ? null : new HttpURL(po.getReadmeLink());
-        return new Dataset(po.getId(), homepage, po.getDescription(), readmeLink,
+        return new Dataset(po.getId(), po.getName(), homepage, po.getDescription(), readmeLink,
                 po.getCreatedAt(), po.getUpdatedAt(), po.getOwnerName(), po.getCreatorUserId(), po.getCreatorOrgId());
     }
 }

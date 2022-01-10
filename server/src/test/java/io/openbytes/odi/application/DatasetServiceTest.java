@@ -46,15 +46,30 @@ public class DatasetServiceTest {
         Dataset dataset1 = new Dataset("test_dataset", new HttpURL("http://baidu.com"),
                 "desc", new HttpURL("http://baidu.com"), Instant.now(), Instant.now(), "ownerName", "1", "1");
 
+        // query none
+        Optional<DatasetVO> vo = Assertions.assertDoesNotThrow(() -> datasetService.getByName("")); // empty name
+        Assertions.assertTrue(vo.isEmpty());
+
+        // query dataset1
         when(datasetRepository.getByName(dataset1.getName())).then(invocation -> Optional.of(dataset1));
 
-        Optional<DatasetVO> vo = Assertions.assertDoesNotThrow(() -> datasetService.getByName(dataset1.getName()));
-        Assertions.assertEquals(dataset1.getName(), vo.get().name);
-        Assertions.assertEquals(dataset1.getHomepage().getUrl(), vo.get().homepage);
+        vo = Assertions.assertDoesNotThrow(() -> datasetService.getByName(dataset1.getName()));
+        Assertions.assertEquals(DatasetVO.fromDO(dataset1), vo.get());
     }
 
     @Test
     public void testGetById() {
-        
+        Dataset dataset1 = new Dataset("test_dataset", new HttpURL("http://baidu.com"),
+                "desc", new HttpURL("http://baidu.com"), Instant.now(), Instant.now(), "ownerName", "1", "1");
+
+        // query none
+        Optional<DatasetVO> vo = Assertions.assertDoesNotThrow(() -> datasetService.getById("")); // empty name
+        Assertions.assertTrue(vo.isEmpty());
+
+        // query dataset1
+        when(datasetRepository.get(dataset1.getId())).then(invocation -> Optional.of(dataset1));
+
+        vo = Assertions.assertDoesNotThrow(() -> datasetService.getById(dataset1.getId()));
+        Assertions.assertEquals(DatasetVO.fromDO(dataset1), vo.get());
     }
 }
