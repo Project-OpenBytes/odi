@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.openbytes.odi.interfaces.controller.api;
+package io.openbytes.odi.interfaces.controller.api.v1;
 
 import io.openbytes.odi.BizException;
 import io.openbytes.odi.CodeAndMessage;
