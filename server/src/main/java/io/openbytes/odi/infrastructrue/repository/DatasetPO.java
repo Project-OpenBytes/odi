@@ -25,7 +25,7 @@ import java.time.Instant;
 @TableName("dataset")
 @Getter
 @Setter
-public class DatasetPO {
+public class DatasetPO extends BasePO {
     private String id;
     private String name;
     private String homepage;

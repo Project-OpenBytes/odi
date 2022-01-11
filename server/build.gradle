@@ -49,7 +49,11 @@ dependencies {
     // s3
     implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.131'
 
+    // okhttp
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.0'
 
+    // fastjson
+    implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.62'
 }
 
 test {

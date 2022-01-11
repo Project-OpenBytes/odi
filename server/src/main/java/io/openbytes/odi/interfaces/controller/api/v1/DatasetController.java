@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.openbytes.odi.interfaces.controller.api;
+package io.openbytes.odi.interfaces.controller.api.v1;
 
 import io.openbytes.odi.application.DatasetFileService;
 import io.openbytes.odi.application.DatasetService;

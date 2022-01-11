@@ -1,7 +1,38 @@
 ### GET request with parameter
-GET http://localhost:8080/api/v1/datasets/1
+GET http://localhost:9876/api/v1/datasets/1
 Accept: application/json
 
 ### GET request with parameter
-GET http://localhost:8080/api/v1/datasets/MINIST/files
+GET http://localhost:9876/api/v1/datasets/MINIST/files
 Accept: application/json
+
+
+### 1. request github user
+POST https://github.com/login/device/code
+Content-Type: application/json
+Accept: application/json
+
+{
+"client_id" :${},
+"scope":""
+}
+
+### 3. get user access_token from
+POST https://github.com/login/oauth/access_token
+Content-Type: application/json
+Accept: application/json
+
+{
+"client_id" : ${},
+"device_code" : ${},
+"grant_type" : ${}
+}
+
+### get user info from token
+GET https://api.github.com/user
+Authorization: token ${token}
+
+
+### odi process
+### 1. request github user
+GET http://localhost:9876/api/v1/login/github/device/code
