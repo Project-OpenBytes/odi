@@ -41,4 +41,5 @@ public class LoginController {
     public Result<Optional<DeviceCode>> getGithubLoginDeviceCode() {
         return Result.ok(githubService.getDeviceCode());
     }
+
 }

@@ -19,6 +19,7 @@ package io.openbytes.odi.application;
 import cn.hutool.core.util.StrUtil;
 import io.openbytes.odi.BizException;
 import io.openbytes.odi.domain.user.DeviceCode;
+import io.openbytes.odi.domain.user.GithubOauthTokenResult;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -38,20 +39,37 @@ public class GithubServiceTest {
 
     @Test
     public void testGetDeviceCode() {
-        // test empty clientId
+        //1.1 test empty clientId
         githubService = new GithubService("");
         Assertions.assertThrows(BizException.class, () -> githubService.getDeviceCode());
 
 
-        // test a wrong clientId
+        //1.2 test a wrong clientId
         githubService = new GithubService("wrong clientId");
         Assertions.assertThrows(BizException.class, () -> githubService.getDeviceCode());
 
-        // test get client id
+        //1.3 test get client id
         githubService = new GithubService(clientId);
         Optional<DeviceCode> dc = Assertions.assertDoesNotThrow(() -> githubService.getDeviceCode());
         Assertions.assertFalse(dc.isEmpty());
         Assertions.assertTrue(StrUtil.isNotEmpty(dc.get().getUserCode()));
 
+        //2.1 test get access token with empty client id
+        githubService = new GithubService("");
+        Assertions.assertThrows(BizException.class, () -> githubService.getOAuthAccessToken(""));
+
+        //2.2 test a wrong clientId
+        githubService = new GithubService("wrong clientId");
+        Assertions.assertThrows(BizException.class, () -> githubService.getOAuthAccessToken("test device code"));
+
+        //2.3 test get access token with right device code, but not login in web
+        githubService = new GithubService(clientId);
+        Optional<GithubOauthTokenResult> gotr = Assertions.assertDoesNotThrow(() -> githubService.getOAuthAccessToken(dc.get().getDeviceCode()));
+        Assertions.assertEquals(gotr.get().isSuccess(), false);
+        Assertions.assertEquals(gotr.get().getMessage(), GithubOauthTokenResult.OauthFailed.authorizationPending.getErrorDescription());
+        // login in
+        //2.4 check again
+        //gotr = Assertions.assertDoesNotThrow(() -> githubService.getOAuthAccessTokenAndRegister(dc.get().getDeviceCode()));
+        //Assertions.assertTrue(StrUtil.isNotEmpty(gotr.get().getAccess_token()));
     }
 }
