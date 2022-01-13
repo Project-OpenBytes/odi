@@ -7,7 +7,7 @@
 
 name: Java CI
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   build:
@@ -22,6 +22,6 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Build with Gradle
-        run: gradle build -p server
+        run: gradle build -p server -x test
 
 
