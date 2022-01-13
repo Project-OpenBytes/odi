@@ -12,5 +12,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-def test_cli():
-    assert 1==1
+from abc import ABCMeta, abstractmethod
+from typing import Any
+
+
+class Storage(metaclass=ABCMeta):
+    @abstractmethod
+    def download(self) -> Any:
+        raise NotImplementedError
+
+    @abstractmethod
+    def upload(self) -> Any:
+        raise NotImplementedError

@@ -11,34 +11,28 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
+
+from functools import partial
 
 import click
 
-from odi import __version__
+from odi.util import ui
 
 
-@click.group(context_settings={"help_option_names": ("-h", "--help")})
+@click.group(cls=ui.CLIGroup, context_settings={"help_option_names": ("-h", "--help")})
 @click.pass_context
 def cli(ctx: click.Context) -> None:
     pass
 
 
+command = partial(cli.command, cls=ui.Command)
+
+
 @cli.command()
 @click.pass_obj
 def auth(ctx: str) -> None:
-    print("login")
+    """Login, logout, and get user info"""
+    print("auth")
 
 
 @cli.command()
@@ -61,7 +55,7 @@ def pull(ctx: str, dataset: str, path: str) -> None:
 @cli.command()
 @click.pass_obj
 def push(ctx: str) -> None:
-    print("get")
+    print("push")
 
 
 @cli.command()
@@ -71,9 +65,12 @@ def search(ctx: str) -> None:
 
 
 @cli.command()
-@click.pass_obj
-def version(ctx: str) -> None:
-    print(__version__)
+def version() -> None:
+    """ODI version"""
+
+    from odi.cli.command.version import implement_version
+
+    implement_version()
 
 
 if __name__ == "__main__":

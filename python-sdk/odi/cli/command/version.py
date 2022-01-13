@@ -12,5 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-def test_cli():
-    assert 1==1
+import click
+
+from odi import __version__
+
+
+def implement_version() -> None:
+    click.echo(__version__)

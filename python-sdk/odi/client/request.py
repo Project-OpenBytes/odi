@@ -1,6 +1,19 @@
+#  Copyright 2021 The OpenBytes Team. All rights reserved.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
 
-import os.path
-from enum import Enum, unique
+from abc import ABCMeta
+from typing import Type
 from urllib.parse import urljoin
 
 from requests import Session
@@ -12,47 +25,64 @@ class _HTTPMethod:
     POST = "POST"
 
 
-@unique
-class Request(Enum):
-    HealthCheck = "health_check"
-    PullDatasetByName = "pull_dataset_by_name"
-
-
-class _URLBuilder:
+class _BaseRequest(metaclass=ABCMeta):
     _API_VERSION = "v1"
 
-    def __init__(self) -> None:
-        self._common_request_prefix = "/api/" + self._API_VERSION + "/"
-        self._dataset_request_prefix = self._common_request_prefix + "datasets/"
+    _URL = ""
 
-        self._builder = {
-            Request.HealthCheck: self._health_check,
-            Request.PullDatasetByName: self._pull_dataset_by_name
-        }
+    _REQUEST_PREFIX = f"/api/{_API_VERSION}/"
+    _DATASET_REQUEST_PREFIX = f"{_REQUEST_PREFIX}datasets/"
 
-    @staticmethod
-    def _health_check(**kwargs) -> str:
-        return "/health/check/"
+    METHOD = _HTTPMethod.GET
 
-    def _pull_dataset_by_name(self, **kwargs) -> str:
-        return urljoin(self._dataset_request_prefix, os.path.join(kwargs["dataset"], "files/"))
+    @classmethod
+    def make_url(cls, **kwargs) -> str:
+        raise NotImplementedError
 
-    def build(self, req: Request, **kwargs) -> str:
-        return self._builder[req](**kwargs)
+    @classmethod
+    def api_version(cls) -> str:
+        return cls._API_VERSION
 
-    def version(self) -> str:
-        return self._API_VERSION
+
+class _HealthCheckRequest(_BaseRequest):
+    _URL = "/health/check/"
+    METHOD = _HTTPMethod.GET
+
+    @classmethod
+    def make_url(cls, **kwargs) -> str:
+        return cls._URL
+
+
+class _PullDatasetByNameRequest(_BaseRequest):
+    METHOD = _HTTPMethod.POST
+
+    @classmethod
+    def make_url(cls, **kwargs) -> str:
+        return urljoin(cls._DATASET_REQUEST_PREFIX, f"{kwargs['dataset']}files/")
+
+
+class Request:
+    # ignore the camel style
+    HealthCheck = _HealthCheckRequest
+    PullDatasetByName = _PullDatasetByNameRequest
 
 
 class Client:
+    _SERVER = "http://127.0.0.1/"
 
     def __init__(self) -> None:
-        self._url_builder = _URLBuilder()
+        pass
 
-    def _make_url(self, req: Request, **kwargs) -> str:
-        return self._url_builder.build(req, **kwargs)
+    def _make_url(self, req: Type[_BaseRequest], **kwargs) -> str:
+        return urljoin(self._SERVER, req.make_url(**kwargs))
 
-    def do(self, req: Request, **kwargs) -> Response:
-        url = urljoin(self._HOME, self._make_url(req, **kwargs))
-        resp = Session().request(method=_HTTPMethod.GET, url=url)
+    def do(self, req: Type[_BaseRequest], **kwargs) -> Response:
+        url = self._make_url(req, **kwargs)
+        resp = Session().request(method=req.METHOD, url=url)
         return resp
+
+
+__all__ = ["Client", "Request"]
+
+if __name__ == "__main__":
+    print(Client().do(Request.HealthCheck))
