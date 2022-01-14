@@ -13,7 +13,9 @@
 #  limitations under the License.
 
 import os
-from concurrent.futures import FIRST_EXCEPTION, ThreadPoolExecutor, wait
+import time
+from concurrent.futures import ALL_COMPLETED, FIRST_EXCEPTION, ThreadPoolExecutor, wait
+from traceback import format_exc
 from warnings import warn
 
 from odi.client.request import Client, Request
@@ -57,3 +59,51 @@ class ODI:
             futures = [executor.submit(S3.download_obj, file, pos, path) for pos, file in enumerate(files)]
 
             done, not_done = wait(futures, return_when=FIRST_EXCEPTION)
+
+    def login_from_github(self) -> bool:
+        resp = Client().do(Request.GithubLoginDeviceCode).json()
+        try:
+            data = resp["data"]
+            url = data["verificationUrl"]
+            expire = data["expiresIn"]
+            interval = data["interval"]
+            user_code = data["userCode"]
+            device_code = data["deviceCode"]
+            print(user_code)
+            print(url)
+            time.sleep(2)
+            print("Plz enter the code...")
+        except KeyError:
+            raise format_exc()
+        else:
+            import webbrowser
+
+            webbrowser.open(url)
+            print("please enter the code..")
+
+            def get_odi_token(exp, poke, dc) -> str:
+                # todo 改成真正计时 end-start
+                i = 0
+                while i < exp:
+                    print("requesting")
+                    r = self._client.do(Request.RegisterByGithubDeviceCode, data={"device_code": dc}).json()
+                    time.sleep(poke)
+                    i += poke
+                    print(r)
+                    if r["status"] == "SUCCESS":
+                        return r["user"]
+                return ""
+
+            with ThreadPoolExecutor(10) as executor:
+                all_task = [executor.submit(get_odi_token, expire, interval, device_code)]
+
+            done, not_done = wait(all_task, return_when=ALL_COMPLETED)
+            for future in done:
+                print(future.result())
+
+            print("main ")
+        return True
+
+
+if __name__ == "__main__":
+    ODI().login_from_github()

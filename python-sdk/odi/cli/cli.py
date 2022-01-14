@@ -28,20 +28,50 @@ def cli(ctx: click.Context) -> None:
 command = partial(cli.command, cls=ui.Command)
 
 
-@cli.command()
+@cli.group()
 @click.pass_obj
 def auth(ctx: str) -> None:
     """Login, logout, and get user info"""
-    print("auth")
+    pass
 
 
-@cli.command()
+@auth.command()
+@click.pass_obj
+def login(ctx: str) -> None:
+    """Login to ODI"""
+
+    from odi.cli.command.auth import implement_login
+
+    implement_login()
+
+
+@auth.command()
+@click.pass_obj
+def logout(ctx: str) -> None:
+    """Logout from ODI"""
+
+    from odi.cli.command.auth import implement_logout
+
+    implement_logout()
+
+
+@auth.command()
+@click.pass_obj
+def info(ctx: str) -> None:
+    """Current user information"""
+
+    from odi.cli.command.auth import implement_info
+
+    implement_info()
+
+
+@command()
 @click.pass_obj
 def init(ctx: str) -> None:
     print("init")
 
 
-@cli.command()
+@command()
 @click.argument("dataset", type=str)
 @click.option(
     "-p", "--path", type=str, default="", help="Path to pull the dataset"
@@ -49,22 +79,24 @@ def init(ctx: str) -> None:
 @click.pass_obj
 def pull(ctx: str, dataset: str, path: str) -> None:
     from odi.cli.command.pull import implement_pull
+
     implement_pull(dataset, path)
 
 
-@cli.command()
+@command()
 @click.pass_obj
 def push(ctx: str) -> None:
     print("push")
 
 
-@cli.command()
+@command()
 @click.pass_obj
 def search(ctx: str) -> None:
+    """sea"""
     print("search")
 
 
-@cli.command()
+@command()
 def version() -> None:
     """ODI version"""
 
