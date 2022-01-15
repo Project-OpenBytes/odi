@@ -16,5 +16,65 @@
 
 package io.openbytes.odi.infrastructrue.repository.user;
 
-public class UserRepositoryImpl {
+import io.openbytes.odi.domain.repository.UserRepository;
+import io.openbytes.odi.domain.user.User;
+import org.springframework.stereotype.Repository;
+
+import javax.annotation.Resource;
+import java.util.Optional;
+
+@Repository
+public class UserRepositoryImpl implements UserRepository {
+
+    @Resource
+    private UserMapper userMapper;
+
+    @Resource
+    private UserChannelMapper channelMapper;
+
+    @Override
+    public void save(User user) {
+        UserPO userPO = toPO(user);
+        userPO.setInsertFields();
+        userMapper.insert(userPO);
+        user.setId(userPO.getId()); // this id should be return
+    }
+
+    @Override
+    public void saveChannelUser(ChannelUserPO channelUserPO) {
+        channelUserPO.setInsertFields();
+        channelMapper.insert(channelUserPO);
+    }
+
+    @Override
+    public Optional<User> getById(String userId) {
+        UserPO user = userMapper.selectById(userId);
+        return Optional.ofNullable(fromPO(user));
+    }
+
+    public Optional<ChannelUserPO> getUserByChannelTypeAndChannelUserId(String channelType, String channelUserId) {
+        return Optional.ofNullable(channelMapper.selectByChannelTypeAndChannelUserId(channelType, channelUserId));
+    }
+
+
+    /**
+     * @param user
+     * @return
+     */
+    public UserPO toPO(User user) {
+        Integer status = null;
+        if (user.getStatus() != null) {
+            status = user.getStatus().getCode();
+        }
+        return new UserPO(user.getUserName(), user.getNickname(), user.getEmail(), user.getAvatarUrl(), status);
+    }
+
+
+    /**
+     * @param userPO
+     * @return
+     */
+    public User fromPO(UserPO userPO) {
+        return new User(userPO.getId(), userPO.getUserName(), userPO.getNickname(), userPO.getEmail(), userPO.getAvatarUrl(), User.Status.of(userPO.getStatus()).get());
+    }
 }

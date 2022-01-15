@@ -16,6 +16,7 @@
 
 package io.openbytes.odi.infrastructrue.repository.user;
 
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -24,28 +25,39 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@TableName("user")
-@Getter
-@Setter
-@AllArgsConstructor
-public class UserPO extends BasePO {
+import java.time.Instant;
 
+/**
+ *
+ */
+@TableName("channel_user")
+@AllArgsConstructor
+@Setter
+@Getter
+public class ChannelUserPO extends BasePO {
+
+    /**
+     *
+     */
     @TableId(type = IdType.AUTO)
     private String id;
-    private String userName;
-    private String nickname;
-    private String email;
-    private String avatarUrl;
-    private Integer status;
 
-    public UserPO() {
-    }
+    /**
+     * eg: github
+     */
+    private String channelName;
+    private String channelUserId;
+    private String channelUserLogin;
+    private String channelAccessToken;
+    private String channelRefreshToken;
+    private String TokenType;
+    private Instant tokenExpire;
+    /**
+     * odi user id
+     */
+    private String userId;
 
-    public UserPO(String userName, String nickname, String email, String avatarUrl, Integer status) {
-        this.userName = userName;
-        this.nickname = nickname;
-        this.email = email;
-        this.avatarUrl = avatarUrl;
-        this.status = status;
+    public ChannelUserPO() {
+
     }
 }

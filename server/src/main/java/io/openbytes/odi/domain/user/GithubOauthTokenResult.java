@@ -25,17 +25,27 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GithubOauthTokenResult {
 
-    @JSONField(name = "success")
-    private boolean success;
+    @JSONField(name = "status")
+    private Status status;
 
     @JSONField(name = "access_token")
     private String accessToken;
 
-    @JSONField(name = "message")
-    private String message;
+
+    public GithubOauthTokenResult() {
+
+    }
+
+    public GithubOauthTokenResult(Status status) {
+        this.status = status;
+    }
+
+    public enum Status {
+        SUCCESS, ERROR_PENDING, ERROR_TOKEN_EXPIRED, ERROR
+    }
 
     @Data
-    public class OauthTokenSuccess {
+    public static class OauthTokenSuccess {
         @JSONField(name = "access_token")
         private String accessToken;
 
@@ -46,11 +56,13 @@ public class GithubOauthTokenResult {
         private String scope;
     }
 
+    //{"error":"expired_token","error_description":"This 'device_code' has expired.","error_uri":"https://docs.github.com/developers/apps/authorizing-oauth-apps#error-codes-for-the-device-flow"}
     @Getter
     @AllArgsConstructor
     public enum OauthFailed {
         // this is a github auth token error response enum
-        authorizationPending("authorization_pending", "The authorization request is still pending.", "error_uri");
+        authorizationPending("authorization_pending", "The authorization request is still pending.", "error_uri"),
+        tokenExpired("expired_token", "This 'device_code' has expired.", "https://docs.github.com/developers/apps/authorizing-oauth-apps#error-codes-for-the-device-flow");
 
         @JSONField(name = "error")
         private final String error;
@@ -60,6 +72,15 @@ public class GithubOauthTokenResult {
 
         @JSONField(name = "error_uri")
         private final String errorUri;
+
+        public static OauthFailed of(String error) {
+            for (OauthFailed oauthFailed : OauthFailed.values()) {
+                if (oauthFailed.getError().equals(error)) {
+                    return oauthFailed;
+                }
+            }
+            return null;
+        }
     }
 
 }

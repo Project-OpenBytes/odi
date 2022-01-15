@@ -64,9 +64,8 @@ public class GithubServiceTest {
 
         //2.3 test get access token with right device code, but not login in web
         githubService = new GithubService(clientId);
-        Optional<GithubOauthTokenResult> gotr = Assertions.assertDoesNotThrow(() -> githubService.getOAuthAccessToken(dc.get().getDeviceCode()));
-        Assertions.assertEquals(gotr.get().isSuccess(), false);
-        Assertions.assertEquals(gotr.get().getMessage(), GithubOauthTokenResult.OauthFailed.authorizationPending.getErrorDescription());
+        GithubOauthTokenResult gotr = Assertions.assertDoesNotThrow(() -> githubService.getOAuthAccessToken(dc.get().getDeviceCode()));
+        Assertions.assertEquals(gotr.getStatus(), GithubOauthTokenResult.Status.ERROR_PENDING);
         // login in
         //2.4 check again
         //gotr = Assertions.assertDoesNotThrow(() -> githubService.getOAuthAccessTokenAndRegister(dc.get().getDeviceCode()));

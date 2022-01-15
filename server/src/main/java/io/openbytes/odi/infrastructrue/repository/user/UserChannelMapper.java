@@ -16,10 +16,22 @@
 
 package io.openbytes.odi.infrastructrue.repository.user;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface UserMapper extends BaseMapper<UserPO> {
+public interface UserChannelMapper extends BaseMapper<ChannelUserPO> {
 
+    /**
+     * @param channelName
+     * @param channelUserId
+     * @return
+     */
+    default ChannelUserPO selectByChannelTypeAndChannelUserId(String channelName, String channelUserId) {
+        LambdaQueryWrapper<ChannelUserPO> query = new LambdaQueryWrapper<>();
+        query.eq(ChannelUserPO::getChannelUserId, channelUserId)
+                .eq(ChannelUserPO::getChannelName, channelName).last("limit 1");
+        return selectOne(query);
+    }
 }
