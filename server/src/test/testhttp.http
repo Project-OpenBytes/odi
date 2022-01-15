@@ -7,14 +7,19 @@ GET http://localhost:9876/api/v1/datasets/MINIST/files
 Accept: application/json
 
 
+### GET request with parameter
+GET http://47.103.90.26:9876/health/check
+Accept: application/json
+
+
 ### 1. request github user
 POST https://github.com/login/device/code
 Content-Type: application/json
 Accept: application/json
 
 {
-"client_id" :${},
-"scope":""
+"client_id" :"",
+"scope":"user"
 }
 
 ### 3. get user access_token from
@@ -23,14 +28,20 @@ Content-Type: application/json
 Accept: application/json
 
 {
-"client_id" : ${},
-"device_code" : ${},
-"grant_type" : ${}
+"client_id" : "",
+"device_code" : "",
+"grant_type" : "urn:ietf:params:oauth:grant-type:device_code"
 }
 
 ### get user info from token
 GET https://api.github.com/user
-Authorization: token ${token}
+Authorization: token
+
+
+
+### get user info from token
+GET https://api.github.com/user
+Authorization: token
 
 
 ### odi process

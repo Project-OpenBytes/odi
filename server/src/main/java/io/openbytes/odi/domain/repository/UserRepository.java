@@ -14,12 +14,25 @@
  * limitations under the License.
  */
 
-package io.openbytes.odi.infrastructrue.repository.user;
+package io.openbytes.odi.domain.repository;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+import io.openbytes.odi.domain.user.User;
+import io.openbytes.odi.infrastructrue.repository.user.ChannelUserPO;
 
-@Mapper
-public interface UserMapper extends BaseMapper<UserPO> {
+import java.util.Optional;
+
+public interface UserRepository {
+    /**
+     * Create or update an user.
+     *
+     * @param user not null
+     */
+    void save(User user);
+
+    void saveChannelUser(ChannelUserPO channelUserPO);
+
+    Optional<User> getById(String userId);
+
+    Optional<ChannelUserPO> getUserByChannelTypeAndChannelUserId(String channelType, String channelUserId);
 
 }

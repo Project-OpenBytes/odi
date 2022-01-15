@@ -26,7 +26,23 @@ import java.time.Instant;
 @Setter
 @ToString
 public abstract class BasePO {
-    private Instant insertTime;
+    protected Instant insertTime;
 
-    private Instant updateTime;
+    protected Instant updateTime;
+
+    /**
+     *
+     */
+    public void setInsertFields() {
+        if (insertTime == null) {
+            insertTime = Instant.now();
+        }
+    }
+
+    /**
+     *
+     */
+    public void setUpdateFields() {
+        updateTime = Instant.now();
+    }
 }

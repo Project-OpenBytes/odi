@@ -16,10 +16,26 @@
 
 package io.openbytes.odi.infrastructrue.repository.user;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.openbytes.odi.infrastructrue.repository.BasePO;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Mapper
-public interface UserMapper extends BaseMapper<UserPO> {
+
+@TableName("user_access_key")
+@Getter
+@Setter
+@AllArgsConstructor
+public class UserAccessKeyPO extends BasePO {
+    private String id;
+    private String userId;
+    private String salt;
+    private String encryptAlgorithm;
+    private String signature;
+
+    public UserAccessKeyPO() {
+        
+    }
 
 }

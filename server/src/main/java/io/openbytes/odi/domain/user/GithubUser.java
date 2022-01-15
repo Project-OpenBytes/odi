@@ -14,12 +14,32 @@
  * limitations under the License.
  */
 
-package io.openbytes.odi.infrastructrue.repository.user;
+package io.openbytes.odi.domain.user;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
 
-@Mapper
-public interface UserMapper extends BaseMapper<UserPO> {
+@Data
+public class GithubUser {
 
+    @JSONField(name = "id")
+    private String Id;
+
+    /**
+     * this is the unique name
+     */
+    @JSONField(name = "login")
+    private String loginName;
+
+    @JSONField(name = "avatar_url")
+    private String avatarUrl;
+
+    /**
+     * this is the nickname
+     */
+    @JSONField(name = "name")
+    private String nickName;
+
+    @JSONField(name = "email")
+    private String email;
 }

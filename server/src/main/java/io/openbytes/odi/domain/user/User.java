@@ -17,19 +17,16 @@
 package io.openbytes.odi.domain.user;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Optional;
 
 @Getter
+@Setter
 @ToString(callSuper = true)
 @EqualsAndHashCode(of = "id", callSuper = false)
+@AllArgsConstructor
 public class User {
-    @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
 
@@ -38,16 +35,15 @@ public class User {
      */
     private String nickname;
 
-
-    /**
-     * user encrypt password
-     */
-    private String password;
-
     /**
      * user unique name
      */
     private String userName;
+
+    /**
+     * user unique email
+     */
+    private String email;
 
     /**
      * user avatar link
@@ -73,7 +69,7 @@ public class User {
             this.code = code;
         }
 
-        public static Optional<Status> get(int code) {
+        public static Optional<Status> of(int code) {
             for (Status status : Status.values()) {
                 if (status.code == code) {
                     return Optional.of(status);
@@ -81,5 +77,8 @@ public class User {
             }
             return Optional.empty();
         }
+    }
+
+    public User() {
     }
 }
