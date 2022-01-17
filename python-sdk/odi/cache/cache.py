@@ -13,22 +13,47 @@
 #  limitations under the License.
 
 from abc import ABCMeta, abstractmethod
-from typing import Any
+from typing import Any, Optional
 
 
-class StorageInterface(metaclass=ABCMeta):
+class Item:
+    def __init__(
+            self,
+            value: Any = None,
+            size: Optional[int] = -1
+    ) -> None:
+        self._value = value
+        self._size = size
+
+    @property
+    def value(self) -> Any:
+        return self._value
+
+    @property
+    def size(self) -> int:
+        return self._size
+
+
+class CacheInterface(metaclass=ABCMeta):
     @abstractmethod
-    def upload(self) -> Any:
+    def get(self, *args: str) -> Item or None:
         raise NotImplementedError
 
     @abstractmethod
-    def download(self) -> Any:
+    def put(self, key: str, value: Any) -> Item or None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def remove(self, key: str) -> bool:
         raise NotImplementedError
 
 
-class Storage(StorageInterface):
-    def upload(self) -> Any:
-        raise NotImplementedError
+class Cache(CacheInterface):
+    def get(self, *args: str) -> Item or None:
+        return None
 
-    def download(self) -> Any:
-        raise NotImplementedError
+    def put(self, key: str, value: Any) -> Item or None:
+        return None
+
+    def remove(self, key: str) -> bool:
+        return False

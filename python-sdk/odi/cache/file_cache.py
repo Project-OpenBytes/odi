@@ -12,20 +12,27 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from odi.client import ODI
+import os
+import pathlib
+from typing import Optional
+
+from odi.cache.cache import Cache
 
 
-def implement_login() -> None:
-    _login_from_github()
+class FileCache(Cache):
+    _PATH_PREFIX = os.path.join(pathlib.Path.home(), ".config", "odi")
 
+    def __init__(
+            self,
+            path_prefix: Optional[str]
+    ) -> None:
+        super().__init__()
 
-def implement_logout() -> None:
-    print("logout")
+    def get(self):
+        pass
 
+    def put(self) -> Any:
+        pass
 
-def implement_info() -> None:
-    print("info")
-
-
-def _login_from_github() -> None:
-    ODI().login()
+    def remove(self) -> Any:
+        pass

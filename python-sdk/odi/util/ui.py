@@ -20,7 +20,7 @@ import click
 class HelpFormatter(click.HelpFormatter):
     def __init__(
             self,
-            indent_increment: int = 2,
+            indent_increment: Optional[int] = 2,
             width: Optional[int] = 100,
             max_width: Optional[int] = None
     ) -> None:

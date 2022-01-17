@@ -65,6 +65,16 @@ def info(ctx: str) -> None:
     implement_info()
 
 
+@auth.command()
+@click.pass_obj
+def refresh(ctx: str) -> None:
+    """Current user information"""
+
+    from odi.cli.command.auth import implement_info
+
+    implement_info()
+
+
 @command()
 @click.pass_obj
 def init(ctx: str) -> None:
