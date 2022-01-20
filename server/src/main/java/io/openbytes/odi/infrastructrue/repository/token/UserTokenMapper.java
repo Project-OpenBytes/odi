@@ -14,28 +14,13 @@
  * limitations under the License.
  */
 
-package io.openbytes.odi.infrastructrue.repository.user;
+package io.openbytes.odi.infrastructrue.repository.token;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.openbytes.odi.infrastructrue.repository.BasePO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import io.openbytes.odi.infrastructrue.repository.user.UserTokenPO;
+import org.apache.ibatis.annotations.Mapper;
 
-
-@TableName("user_access_key")
-@Getter
-@Setter
-@AllArgsConstructor
-public class UserAccessKeyPO extends BasePO {
-    private String id;
-    private String userId;
-    private String salt;
-    private String encryptAlgorithm;
-    private String signature;
-
-    public UserAccessKeyPO() {
-        
-    }
+@Mapper
+public interface UserTokenMapper extends BaseMapper<UserTokenPO> {
 
 }

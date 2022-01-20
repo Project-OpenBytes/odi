@@ -20,6 +20,15 @@ CREATE TABLE IF NOT EXISTS `dataset`
 (
     128
 ) NOT NULL,
+
+    `insert_time` DATETIME
+(
+    3
+),
+    `update_time` DATETIME
+(
+    3
+),
     `name` VARCHAR
 (
     512
@@ -33,14 +42,6 @@ CREATE TABLE IF NOT EXISTS `dataset`
 (
     1024
 ) NOT NULL,
-    `created_at` DATETIME
-(
-    3
-),
-    `updated_at` DATETIME
-(
-    3
-),
     `owner_name` TEXT,
     `creator_user_id` VARCHAR
 (
@@ -62,3 +63,4 @@ CREATE TABLE IF NOT EXISTS `dataset`
     CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_unicode_ci
     ROW_FORMAT = Dynamic;
+alter table user change id id int AUTO_INCREMENT;

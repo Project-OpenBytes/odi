@@ -17,6 +17,7 @@
 package io.openbytes.odi.application;
 
 import cn.hutool.core.util.StrUtil;
+import io.openbytes.odi.domain.UserToken;
 import io.openbytes.odi.domain.repository.UserRepository;
 import io.openbytes.odi.domain.user.BindByGithubDeviceCodeResult;
 import io.openbytes.odi.domain.user.GithubOauthTokenResult;
@@ -37,7 +38,11 @@ public class UserService {
     private GithubService githubService;
 
     @Resource
+    private TokenService tokenService;
+
+    @Resource
     private UserRepository userRepository;
+
 
     public BindByGithubDeviceCodeResult bindByGithubDeviceCode(String githubDeviceCode) {
         GithubOauthTokenResult oauthAccessToken = githubService.getOAuthAccessToken(githubDeviceCode);
@@ -56,29 +61,29 @@ public class UserService {
         // check user exist?
         Optional<ChannelUserPO> channelUserPO = userRepository.getUserByChannelTypeAndChannelUserId("github", githubUser.getId());
         Optional<User> odiUser = channelUserPO.filter(user -> StrUtil.isNotEmpty(user.getUserId())).map(user -> userRepository.getById(user.getUserId())).filter(Optional::isPresent).map(Optional::get);
-        if (odiUser.isPresent()) {
-            return new BindByGithubDeviceCodeResult(BindByGithubDeviceCodeResult.Status.SUCCESS, odiUser.get());
-        }
+        User user = odiUser.orElseGet(() -> {
+            User newUser = new User();
+            newUser.setUserName(githubUser.getLoginName());
+            newUser.setNickname(githubUser.getNickName());
+            newUser.setEmail(githubUser.getEmail());
+            newUser.setAvatarUrl(githubUser.getAvatarUrl());
+            newUser.setStatus(User.Status.enable);
+            userRepository.save(newUser);
 
-        // not exist, create a new user
-        User newUser = new User();
-        newUser.setUserName(githubUser.getLoginName());
-        newUser.setNickname(githubUser.getNickName());
-        newUser.setEmail(githubUser.getEmail());
-        newUser.setAvatarUrl(githubUser.getAvatarUrl());
-        newUser.setStatus(User.Status.enable);
-        userRepository.save(newUser);
+            ChannelUserPO userChannelPO = new ChannelUserPO();
+            userChannelPO.setChannelName("github"); //todo set as enum
+            userChannelPO.setChannelAccessToken(oauthAccessToken.getAccessToken());
+            userChannelPO.setChannelUserId(githubUser.getId());
+            userChannelPO.setTokenType("bearer"); //todo set as enum
+            userChannelPO.setChannelUserLogin(githubUser.getLoginName());
+            userChannelPO.setUserId(newUser.getId());
+            userRepository.saveChannelUser(userChannelPO);
 
-        ChannelUserPO userChannelPO = new ChannelUserPO();
-        userChannelPO.setChannelName("github"); //todo set as enum
-        userChannelPO.setChannelAccessToken(oauthAccessToken.getAccessToken());
-        userChannelPO.setChannelUserId(githubUser.getId());
-        userChannelPO.setTokenType("bearer"); //todo set as enum
-        userChannelPO.setChannelUserLogin(githubUser.getLoginName());
-        userChannelPO.setUserId(newUser.getId());
-        userRepository.saveChannelUser(userChannelPO);
+            return newUser;
+        });
 
-        return new BindByGithubDeviceCodeResult(BindByGithubDeviceCodeResult.Status.SUCCESS, newUser);
-
+        // generate a new user token
+        UserToken userToken = tokenService.generateToken(user.getId());
+        return new BindByGithubDeviceCodeResult(BindByGithubDeviceCodeResult.Status.SUCCESS, userToken, user);
     }
 }
