@@ -16,7 +16,7 @@
 
 package io.openbytes.odi.domain.user;
 
-import com.baomidou.mybatisplus.annotation.EnumValue;
+import io.openbytes.odi.domain.UserToken;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -29,7 +29,7 @@ public class BindByGithubDeviceCodeResult {
     /**
      * odi bearer token
      */
-    private String bearerToken;
+    private UserToken userToken;
 
     private User user;
 
@@ -37,13 +37,9 @@ public class BindByGithubDeviceCodeResult {
         this.status = status;
     }
 
-    public BindByGithubDeviceCodeResult(Status status, String bearerToken) {
+    public BindByGithubDeviceCodeResult(Status status, UserToken userToken, User user) {
         this.status = status;
-        this.bearerToken = bearerToken;
-    }
-
-    public BindByGithubDeviceCodeResult(Status status, User user) {
-        this.status = status;
+        this.userToken = userToken;
         this.user = user;
     }
 
@@ -62,7 +58,6 @@ public class BindByGithubDeviceCodeResult {
         PENDING(3);
 
         @Getter
-        @EnumValue
         public final int status;
 
         public static Status of(GithubOauthTokenResult.Status oauthTokenStatus) {

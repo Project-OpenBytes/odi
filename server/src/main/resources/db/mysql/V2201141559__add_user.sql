@@ -48,6 +48,14 @@ CREATE TABLE IF NOT EXISTS `channel_user`
 (
     32
 ) NOT NULL ,
+    `insert_time` DATETIME
+(
+    3
+) ,
+    `update_time` DATETIME
+(
+    3
+) ,
     `user_id` varchar
 (
     32
@@ -82,14 +90,6 @@ CREATE TABLE IF NOT EXISTS `channel_user`
 (
     3
 ) ,
-    `insert_time` DATETIME
-(
-    3
-) ,
-    `update_time` DATETIME
-(
-    3
-) ,
     PRIMARY KEY
 (
     `id`
@@ -99,6 +99,4 @@ CREATE TABLE IF NOT EXISTS `channel_user`
     CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_unicode_ci
     ROW_FORMAT = Dynamic;
-
 alter table channel_user change id id int AUTO_INCREMENT;
-alter table user change id id int AUTO_INCREMENT;
