@@ -12,23 +12,22 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from abc import ABCMeta, abstractmethod
-from typing import Any
+import re
 
 
-class _StorageInterface(metaclass=ABCMeta):
-    @abstractmethod
-    def upload(self) -> Any:
-        raise NotImplementedError
+class Dataset:
+    @classmethod
+    def is_valid_dataset_name(cls, dataset: str) -> bool:
+        """
+        Check if a dataset name is valid.
 
-    @abstractmethod
-    def download(self) -> Any:
-        raise NotImplementedError
+        Name rule:
+            1. start with alphabet
+            2. only contains alphabets, numbers, _ and -
+            3. 2 <= length <= 18
 
-
-class Storage(_StorageInterface):
-    def upload(self) -> Any:
-        return None
-
-    def download(self) -> Any:
-        return None
+        :param dataset: dataset name
+        :return: `True` if it is valid, `False` otherwise
+        """
+        res = re.search(r"^[A-Za-z][A-Za-z0-9-_]{1,17}$", dataset)
+        return True if res else False

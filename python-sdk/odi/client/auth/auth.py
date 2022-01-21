@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 import json
 import os
 import pathlib
@@ -20,6 +21,7 @@ from abc import ABCMeta, abstractmethod
 from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
 from typing import Any, Optional
 
+from odi.cache import FileCache
 from odi.client.auth.user import User
 from odi.client.request import Client, Request
 
@@ -35,13 +37,16 @@ class Authentication(_AuthenticationInterface):
         self._client = client if client and isinstance(client, Client) else Client()
 
     def auth(self) -> Any:
-        pass
+        return None
 
     def _get_odi_user_info(self, **kwargs: Any) -> (User, str):
-        pass
+        return None, ""
 
-    def _cache_token(self, **kwargs: Any) -> Any:
-        pass
+    @classmethod
+    def _cache_token(cls, token: str) -> bool:
+        fc = FileCache()
+        item = fc.put(os.path.join(fc.get_odi_file_prefix(), "user_token"), token, mode="w")
+        return True if item else False
 
 
 class GithubAuth(Authentication):
@@ -52,20 +57,13 @@ class GithubAuth(Authentication):
 
         done, not_done = wait(all_task, return_when=ALL_COMPLETED)
         if not_done:
+            print("Login Failed!")
             return False
         for future in done:
-            user, _ = future.result()
-            if user:
-                self._cache_token(user)
+            user, token = future.result()
+            self._cache_token(token)
         print("Login succeeded!")
         return True
-
-    def _cache_token(self, token: Any) -> Any:
-        path = os.path.join(pathlib.Path.home(), ".odi")
-        if not os.path.exists(os.path.join(pathlib.Path.home(), ".odi")):
-            os.makedirs(path)
-        with open(os.path.join(path, "odi_token"), "w") as file:
-            file.write(json.dumps(token, indent=2))
 
     def _get_device_code(self) -> (str, int, int):
         resp = self._client.do(Request.GithubLoginDeviceCode).json()
@@ -76,26 +74,28 @@ class GithubAuth(Authentication):
             request_interval = data["interval"]
             user_code = data["userCode"]
             device_code = data["deviceCode"]
-        except KeyError:
-            # raise format_exc()
-            print(resp)
-            print("Failed.")
-        else:
             print(f"Your Github authentication code: {user_code}")
             print(f"Please enter the code on: {url}")
             time.sleep(2)
             webbrowser.open(url)
             print("Waiting for ODI response...")
-
+            print(resp)
             return device_code, expire_time, request_interval
+        except KeyError:
+            # raise format_exc()
+            print(resp)
+            print("Failed.")
 
     def _get_odi_user_info(self, device_code: str, expire_time: int, request_interval: int) -> (Any, str):
         start = time.time()
         while time.time() - start < expire_time:
             resp = self._client.do(Request.RegisterByGithubDeviceCode, data={"device_code": device_code}).json()
             time.sleep(request_interval)
-            if resp["status"] == "SUCCESS":
-                return resp["user"], ""
+            try:
+                if resp["status"] == "SUCCESS":
+                    return resp["user"], resp["userToken"]["userToken"]
+            except KeyError:
+                print(resp)
         return None, ""
 
 

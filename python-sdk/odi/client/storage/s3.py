@@ -31,9 +31,23 @@
 #         self.url = url
 #
 #
-# class S3:
-#     def __init__(self) -> None:
-#         pass
+from asyncio import as_completed
+from concurrent.futures import ThreadPoolExecutor
+from typing import Any
+
+import requests
+from tqdm import tqdm
+
+from odi.client.storage.storage import Storage
+
+
+class S3(Storage):
+    def upload(self) -> Any:
+        pass
+
+    def download(self) -> Any:
+        pass
+
 #
 #     @staticmethod
 #     def download_obj(obj: S3Object, position: int, path: str = "./"):
@@ -54,3 +68,23 @@
 #                 for data in response.iter_content(block_size):
 #                     bar.update(len(data))
 #                     file.write(data)
+
+
+def download_file(url):
+    with requests.get(url, stream=True) as r:
+        for chunk in r.iter_content(chunk_size=50000):
+            pass
+    return url
+
+
+# if __name__ == "__main__":
+#     urls = ["http://mirrors.evowise.com/linuxmint/stable/20/linuxmint-20-xfce-64bit.iso",
+#             "https://www.vmware.com/go/getworkstation-win",
+#             "https://download.geany.org/geany-1.36_setup.exe"]
+#
+#     with tqdm(total=len(urls)) as pbar:
+#         with ThreadPoolExecutor(max_workers=len(urls)) as ex:
+#             futures = [ex.submit(download_file, url) for url in urls]
+#             for future in as_completed(futures):
+#                 result = future.result()
+#                 pbar.update(1)

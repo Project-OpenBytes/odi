@@ -13,4 +13,24 @@
 #  limitations under the License.
 
 class User:
-    pass
+    def __init__(self) -> None:
+        self._id = None
+        self._nickName = None
+        self._userName = None
+        self._email = None
+
+    @property
+    def id(self) -> str:
+        return self._id
+
+    @property
+    def nickname(self) -> str:
+        return self._nickName
+
+    @property
+    def username(self) -> str:
+        return self._userName
+
+    @property
+    def email(self) -> str:
+        return self._email

@@ -24,6 +24,11 @@ class ODIException(Exception):
         return self._message if self._message else ""
 
 
+class ResponseError(ODIException):
+    def __init__(self, message: Optional[str] = None) -> None:
+        super().__init__(message)
+
+
 class DatabaseError(ODIException):
     def __init__(self, message: Optional[str] = None) -> None:
         super().__init__(message)

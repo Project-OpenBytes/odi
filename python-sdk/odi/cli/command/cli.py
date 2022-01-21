@@ -12,23 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from abc import ABCMeta, abstractmethod
-from typing import Any
+
+from odi.util import ui
+
+from odi.client import ODI
 
 
-class _StorageInterface(metaclass=ABCMeta):
-    @abstractmethod
-    def upload(self) -> Any:
-        raise NotImplementedError
-
-    @abstractmethod
-    def download(self) -> Any:
-        raise NotImplementedError
-
-
-class Storage(_StorageInterface):
-    def upload(self) -> Any:
-        return None
-
-    def download(self) -> Any:
-        return None
+def implement_cli(ctx: ui.Context, token_file: str, config_file: str) -> None:
+    ctx.obj = ODI(oauth_token_file=token_file, config_file=config_file)

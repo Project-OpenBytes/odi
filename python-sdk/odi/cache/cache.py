@@ -12,11 +12,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+"""Base cache definition."""
+
 from abc import ABCMeta, abstractmethod
-from typing import Any, Optional
+from typing import Any, Iterable, Optional
 
 
 class Item:
+    """Item for cache."""
+
     def __init__(
             self,
             value: Any = None,
@@ -27,32 +31,55 @@ class Item:
 
     @property
     def value(self) -> Any:
+        """`Item` value."""
         return self._value
 
     @property
     def size(self) -> int:
+        """`Item` size."""
         return self._size
 
 
-class CacheInterface(metaclass=ABCMeta):
+class _CacheInterface(metaclass=ABCMeta):
     @abstractmethod
-    def get(self, *args: str) -> Item or None:
+    def get(self, *args: str) -> Optional[Iterable[Item]]:
+        """
+        Get a number of cache items with cache keys.
+
+        :param args: a number of cache keys
+        :return: a list of `Item`, append `Item` if found a cache, append `None` otherwise
+        """
         raise NotImplementedError
 
     @abstractmethod
-    def put(self, key: str, value: Any) -> Item or None:
+    def put(self, key: str, value: Any) -> Optional[Item]:
+        """
+        Set a new cache with key and value.
+
+        :param key: cache key
+        :param value: cache value
+        :return: an `Item` if set succeeded, `None` otherwise
+        """
         raise NotImplementedError
 
     @abstractmethod
     def remove(self, key: str) -> bool:
+        """
+        Remove a cache.
+
+        :param key: key of cache to be removed
+        :return: `True` if remove succeeded, `False` otherwise
+        """
         raise NotImplementedError
 
 
-class Cache(CacheInterface):
-    def get(self, *args: str) -> Item or None:
+class Cache(_CacheInterface):
+    """Base cache."""
+
+    def get(self, *args: str) -> Optional[Iterable[Item]]:
         return None
 
-    def put(self, key: str, value: Any) -> Item or None:
+    def put(self, key: str, value: Any) -> Optional[Item]:
         return None
 
     def remove(self, key: str) -> bool:

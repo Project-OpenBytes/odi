@@ -11,3 +11,17 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+from odi.cli.command.auth import implement_login, implement_logout, implement_info
+from odi.cli.command.cli import implement_cli
+from odi.cli.command.pull import implement_pull
+from odi.cli.command.version import implement_version
+
+__all__ = [
+    "implement_cli",
+    "implement_version",
+    "implement_login",
+    "implement_logout",
+    "implement_info",
+    "implement_pull"
+]

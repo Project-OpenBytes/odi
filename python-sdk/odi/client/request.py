@@ -106,7 +106,7 @@ class Client:
     def __init__(
             self,
             protocol: Optional[str] = "http",
-            host: Optional[str] = "127.0.0.1",
+            host: Optional[str] = "47.103.90.26",
             port: Optional[int] = 9876
     ) -> None:
         self._protocol = protocol

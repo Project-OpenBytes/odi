@@ -12,27 +12,66 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+# pylint: disable=arguments-differ
+# pylint: disable=invalid-name
+# pylint: disable=fixme
+# pylint: disable=unspecified-encoding
+
+"""File cache."""
+
 import os
 import pathlib
-from typing import Optional
+from typing import Any, Iterable, Optional
 
-from odi.cache.cache import Cache
+from odi.cache.cache import Cache, Item
 
 
 class FileCache(Cache):
-    _PATH_PREFIX = os.path.join(pathlib.Path.home(), ".config", "odi")
+    """`FileCache` provides functions for get, rewrite file content and remove file."""
 
-    def __init__(
-            self,
-            path_prefix: Optional[str]
-    ) -> None:
-        super().__init__()
+    _ODI_FILE_PREFIX = os.path.join(pathlib.Path.home(), ".config", "odi")
 
-    def get(self):
-        pass
+    def get(self, *args: str) -> Optional[Iterable[Item]]:
+        """
+        Get multi files content from a number of file paths and save the content to `Item` object.
 
-    def put(self) -> Any:
-        pass
+        :param args: a number of file paths
+        :return: a list of `Item`, append `Item` if read file successfully, append `None` otherwise
+        """
 
-    def remove(self) -> Any:
-        pass
+        res = []
+        for file in args:
+            try:
+                with open(file, "r", encoding="utf-8") as f:
+                    # todo: fix out of memory
+                    data = f.read()
+                    res.append(Item(value=data))
+            except OSError as e:
+                print(f"Failed to {self.get.__name__} {__class__.__name__} '{file}': {format(e)}")
+                res.append(None)
+
+        return res
+
+    def put(self, key: str, value: Any, mode: Optional[str] = "w") -> Optional[Item]:
+        try:
+            dirname = os.path.dirname(key)
+            if not os.path.exists(dirname) and len(dirname) > 0:
+                os.makedirs(dirname)
+            with open(key, mode) as f:
+                # todo: fix out of memory
+                data = f.write(str(value))
+                return Item(value=data)
+        except OSError as e:
+            print(f"Failed to {self.put.__name__} {__class__.__name__}: {format(e)}")
+            return None
+
+    def remove(self, key: str) -> bool:
+        try:
+            os.remove(key)
+            return True
+        except OSError as e:
+            print(f"Failed to {self.remove.__name__} {__class__.__name__}: {format(e)}")
+            return False
+
+    def get_odi_file_prefix(self) -> str:
+        return self._ODI_FILE_PREFIX

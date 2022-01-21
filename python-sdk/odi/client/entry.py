@@ -16,6 +16,7 @@ import os
 import time
 from concurrent.futures import ALL_COMPLETED, FIRST_EXCEPTION, ThreadPoolExecutor, wait
 from traceback import format_exc
+from typing import Any, Dict, Optional
 from warnings import warn
 
 from odi.client.request import Client, Request
@@ -27,14 +28,29 @@ from odi.client.auth.auth import GithubAuth
 
 class ODI:
     def __init__(
-            self
-    ):
+            self,
+            oauth_token: Optional[str] = None,
+            oauth_token_file: Optional[str] = None,
+            config: Optional[Dict[str, Any]] = None,
+            config_file: Optional[str] = None
+    ) -> None:
         self._client = Client()
         self._storage = None
+        self._user = None
+
+    def init(self) -> Any:
+        pass
+
+    def user_info(self) -> Any:
+        pass
+
+    def push(self) -> Any:
+        pass
 
     # def pull(self, *, dataset: str, path: str = "") -> bool:
     #     if path and not os.path.exists(path):
-    #         print("No such path.")
+    #         print(f"Failed to {self.pull.__name__} dataset '{dataset}': "
+    #               f"No such path or directory: '{path}'.")
     #         return False
     #
     #     resp = self._client.do(Request.PullDatasetByName, dataset=dataset).json()
@@ -64,5 +80,12 @@ class ODI:
     #
     #         done, not_done = wait(futures, return_when=FIRST_EXCEPTION)
 
+    def search(self, dataset: str, tag: Optional[str] = None) -> Any:
+        pass
+
     def login(self) -> bool:
-        GithubAuth(self._client).auth()
+        return GithubAuth(self._client).auth()
+
+
+if __name__ == "__main__":
+    ODI().login()
