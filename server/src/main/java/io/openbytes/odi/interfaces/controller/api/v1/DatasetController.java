@@ -19,10 +19,13 @@ package io.openbytes.odi.interfaces.controller.api.v1;
 import io.openbytes.odi.application.DatasetFileService;
 import io.openbytes.odi.application.DatasetService;
 import io.openbytes.odi.domain.storage.ListFilesResponse;
+import io.openbytes.odi.infrastructrue.ODIPage;
 import io.openbytes.odi.interfaces.Result;
+import io.openbytes.odi.interfaces.ro.ListDatasetRO;
 import io.openbytes.odi.interfaces.vo.DatasetVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,7 +37,7 @@ import java.util.Optional;
 public class DatasetController {
 
     @Resource
-    private DatasetService service;
+    private DatasetService datasetService;
 
     @Resource
     private DatasetFileService datasetFileService;
@@ -47,9 +50,8 @@ public class DatasetController {
             id = "";
         }
 
-        return Result.ok(service.getById(id));
+        return Result.ok(datasetService.getById(id));
     }
-
 
     /**
      * @param dataset the dataset name you want to query.
@@ -59,12 +61,26 @@ public class DatasetController {
      */
     @ApiOperation(value = "Get dataset files", notes = "Get dataset files.")
     @GetMapping("/{dataset}/files")
-    public Result<Optional<ListFilesResponse>> list(@PathVariable String dataset, @RequestParam(name = "marker", required = false) String marker, @RequestParam(name = "maxKeys", defaultValue = "10", required = false) int maxKeys) {
+    public Result<Optional<ListFilesResponse>> listFiles(@PathVariable String dataset, @RequestParam(name = "marker", required = false) String marker, @RequestParam(name = "maxKeys", defaultValue = "10", required = false) int maxKeys) {
         if (dataset == null) {
             dataset = "";
         }
 
-        return Result.ok(datasetFileService.list(dataset, marker, maxKeys));
+        return Result.ok(datasetFileService.listFiles(dataset, marker, maxKeys));
     }
 
+    @GetMapping(value = "")
+    public Result<ODIPage<DatasetVO>> list(@RequestParam(required = false) @ApiParam(value = "query key param(query name and tag)", required = false) String keyword,
+                                           @RequestParam(required = false, defaultValue = "1") @ApiParam(value = "page number", required = false) Integer index,
+                                           @RequestParam(required = false, defaultValue = "128") @ApiParam(value = "page size", required = false) Integer size
+                                           //, @RequestParam(required = false) @ApiParam(value = "order fields", required = false, example = "insert_time true") Map<String, Boolean> orderFields
+    ) {
+        ListDatasetRO queryRO = new ListDatasetRO();
+        queryRO.setKeyword(keyword);
+        queryRO.setIndex(index);
+        queryRO.setSize(size);
+        //queryRO.setOrderFields(orderFields);
+
+        return Result.ok(datasetService.listDatasetsByQuery(queryRO));
+    }
 }

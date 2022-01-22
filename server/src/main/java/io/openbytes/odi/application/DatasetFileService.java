@@ -34,7 +34,7 @@ public class DatasetFileService {
         this.storage = storage;
     }
 
-    public Optional<ListFilesResponse> list(String datasetName, String marker, int maxKeys) {
+    public Optional<ListFilesResponse> listFiles(String datasetName, String marker, int maxKeys) {
         // todo check dataset
         if (StrUtil.isEmpty(datasetName)) {
             return Optional.of(ListFilesResponse.emptyResponse());
