@@ -26,8 +26,8 @@ public class DatasetVO {
     public String homepage;
     public String description;
     public String readmeLink;
-    public Instant createdAt;
-    public Instant updatedAt;
+    public Instant insertTime;
+    public Instant updatedTime;
     public String ownerName;
     public String creatorUserId;
     public String creatorOrgId;
@@ -35,7 +35,7 @@ public class DatasetVO {
     public Integer starCount;
     public Integer downloadCount;
 
-    public static DatasetVO fromDO(Dataset dataset) {
+    public static DatasetVO from(Dataset dataset) {
         DatasetVO vo = new DatasetVO();
         vo.id = dataset.getId();
         vo.name = dataset.getName();
@@ -46,8 +46,8 @@ public class DatasetVO {
         if (dataset.getReadmeLink() != null) {
             vo.readmeLink = dataset.getReadmeLink().getUrl();
         }
-        vo.createdAt = dataset.getCreatedAt();
-        vo.updatedAt = dataset.getUpdatedAt();
+        vo.insertTime = dataset.getInsertTime();
+        vo.updatedTime = dataset.getUpdatedTime();
         vo.ownerName = dataset.getOwnerName();
         vo.creatorUserId = dataset.getCreatorUserId();
         vo.creatorOrgId = dataset.getCreatorOrgId();

@@ -16,14 +16,19 @@
 
 package io.openbytes.odi.application;
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.openbytes.odi.domain.Dataset;
 import io.openbytes.odi.domain.repository.DatasetRepository;
+import io.openbytes.odi.infrastructrue.ODIPage;
+import io.openbytes.odi.interfaces.ro.ListDatasetRO;
 import io.openbytes.odi.interfaces.vo.DatasetVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j(topic = "metricsLog")
 @Service
@@ -52,8 +57,19 @@ public class DatasetService {
         return Optional.of(datasetVO);
     }
 
+    public ODIPage<DatasetVO> listDatasetsByQuery(ListDatasetRO queryRO) {
+        Page<Dataset> datasetPage = new Page<>();
+
+        if (queryRO.getOrderFields() != null) {
+            datasetPage.setOrders(queryRO.getOrderFields().entrySet().stream().map(x -> new OrderItem(x.getKey(), x.getValue())).collect(Collectors.toList()));
+        }
+
+        datasetPage.setSize(queryRO.getSize()).setCurrent(queryRO.getIndex());
+        return ODIPage.buildResult(datasetRepository.listPageByNameAndTag(datasetPage, queryRO.getKeyword()), DatasetVO::from);
+    }
+
     private DatasetVO assembleVo(Dataset dataset) {
-        return DatasetVO.fromDO(dataset);
+        return DatasetVO.from(dataset);
     }
 
 

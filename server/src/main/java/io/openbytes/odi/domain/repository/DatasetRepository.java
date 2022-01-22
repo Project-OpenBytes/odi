@@ -16,7 +16,9 @@
 
 package io.openbytes.odi.domain.repository;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.openbytes.odi.domain.Dataset;
+import io.openbytes.odi.infrastructrue.ODIPage;
 
 import java.util.Optional;
 
@@ -45,4 +47,12 @@ public interface DatasetRepository {
      */
     Optional<Dataset> getByName(String name);
 
+    /**
+     * list Dataset by keyword, keyword will query name and tag in dataset
+     *
+     * @param page
+     * @param keyword
+     * @return
+     */
+    ODIPage<Dataset> listPageByNameAndTag(Page<Dataset> page, String keyword);
 }

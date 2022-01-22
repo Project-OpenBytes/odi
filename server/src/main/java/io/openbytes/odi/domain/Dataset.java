@@ -16,7 +16,6 @@
 
 package io.openbytes.odi.domain;
 
-import cn.hutool.core.util.RandomUtil;
 import io.openbytes.odi.domain.common.HttpURL;
 import lombok.Getter;
 import lombok.ToString;
@@ -28,7 +27,11 @@ import java.time.Instant;
 public class Dataset {
     private final static int ID_LENGTH = 14;
 
-    private final String id;
+    private String id;
+
+    private Instant insertTime;
+
+    private Instant updatedTime;
 
     private String name;
 
@@ -38,9 +41,6 @@ public class Dataset {
 
     private HttpURL readmeLink;
 
-    private Instant createdAt;
-
-    private Instant updatedAt;
 
     private String OwnerName;
 
@@ -54,17 +54,32 @@ public class Dataset {
 
     private Integer downloadCount;
 
-    public Dataset(String name, HttpURL homepage, String description, HttpURL readmeLink, Instant createdAt, Instant updatedAt,
+    public Dataset(String name, HttpURL homepage, String description, HttpURL readmeLink, Instant insertTime, Instant updatedTime,
                    String ownerName, String creatorUserId, String creatorOrgId) {
-        this.id = RandomUtil.randomString(ID_LENGTH).toUpperCase();
         this.name = name;
         this.homepage = homepage;
         this.description = description;
         this.readmeLink = readmeLink;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.insertTime = insertTime;
+        this.updatedTime = updatedTime;
         this.OwnerName = ownerName;
         this.creatorUserId = creatorUserId;
         this.creatorOrgId = creatorOrgId;
     }
+
+    public Dataset(String id, String name, HttpURL homepage, String description, HttpURL readmeLink, Instant insertTime, Instant updatedTime,
+                   String ownerName, String creatorUserId, String creatorOrgId) {
+        this.id = id;
+        this.name = name;
+        this.homepage = homepage;
+        this.description = description;
+        this.readmeLink = readmeLink;
+        this.insertTime = insertTime;
+        this.updatedTime = updatedTime;
+        this.OwnerName = ownerName;
+        this.creatorUserId = creatorUserId;
+        this.creatorOrgId = creatorOrgId;
+    }
+
+
 }
