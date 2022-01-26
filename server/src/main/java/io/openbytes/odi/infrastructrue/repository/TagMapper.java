@@ -17,28 +17,24 @@
 package io.openbytes.odi.infrastructrue.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.openbytes.odi.infrastructrue.repository.mysql.BaseOptionalMapper;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.Optional;
+import java.util.List;
 
 @Mapper
-public interface DatasetMapper extends BaseOptionalMapper<DatasetPO> {
+public interface TagMapper extends BaseOptionalMapper<TagPO> {
 
-    default Optional<DatasetPO> selectOneByNameOptional(String name) {
-        LambdaQueryWrapper<DatasetPO> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(DatasetPO::getName, name)
-                .last("limit 1");
-        return selectOneOptional(queryWrapper);
+    default void deleteByDatasetId(String datasetId) {
+        LambdaQueryWrapper<TagPO> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(TagPO::getDatasetId, datasetId);
+        delete(queryWrapper);
     }
 
-    default IPage<DatasetPO> selectListPageByName(Page<DatasetPO> page, String keyword) {
-        LambdaQueryWrapper<DatasetPO> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.like(DatasetPO::getName, keyword);
-        return selectPage(page, queryWrapper);
+    default List<TagPO> selectListByIds(List<String> datasetIds) {
+        LambdaQueryWrapper<TagPO> wrapper = Wrappers.lambdaQuery();
+        wrapper.in(TagPO::getDatasetId, datasetIds);
+        return selectList(wrapper);
     }
-
 }
