@@ -17,8 +17,10 @@
 package io.openbytes.odi.interfaces.vo;
 
 import io.openbytes.odi.domain.Dataset;
+import io.openbytes.odi.domain.DatasetTag;
 
 import java.time.Instant;
+import java.util.Set;
 
 public class DatasetVO {
     public String id;
@@ -34,6 +36,7 @@ public class DatasetVO {
     public Integer viewCount;
     public Integer starCount;
     public Integer downloadCount;
+    public Set<DatasetTag> tags;
 
     public static DatasetVO from(Dataset dataset) {
         DatasetVO vo = new DatasetVO();
@@ -47,10 +50,11 @@ public class DatasetVO {
             vo.readmeLink = dataset.getReadmeLink().getUrl();
         }
         vo.insertTime = dataset.getInsertTime();
-        vo.updatedTime = dataset.getUpdatedTime();
+        vo.updatedTime = dataset.getUpdateTime();
         vo.ownerName = dataset.getOwnerName();
         vo.creatorUserId = dataset.getCreatorUserId();
         vo.creatorOrgId = dataset.getCreatorOrgId();
+        vo.tags = dataset.getTags();
         return vo;
     }
 }

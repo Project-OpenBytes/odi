@@ -20,22 +20,28 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.openbytes.odi.domain.Dataset;
+import io.openbytes.odi.domain.DatasetTag;
 import io.openbytes.odi.domain.common.HttpURL;
 import io.openbytes.odi.domain.repository.DatasetRepository;
 import io.openbytes.odi.infrastructrue.ODIPage;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class DatasetRepositoryImpl implements DatasetRepository {
     @Resource
     private DatasetMapper datasetMapper;
 
+    @Resource
+    private TagMapper tagMapper;
+
     @Override
     public void save(Dataset dataset) {
         datasetMapper.insert(toPO(dataset));
+        toTagPOs(dataset).forEach(tagMapper::insert);
     }
 
     @Override
@@ -51,7 +57,10 @@ public class DatasetRepositoryImpl implements DatasetRepository {
     @Override
     public ODIPage<Dataset> listPageByNameAndTag(Page<Dataset> page, String keyword) {
         IPage<DatasetPO> datasetPage = datasetMapper.selectListPageByName(toPage(page), keyword);
-        return ODIPage.buildResult(datasetPage, this::fromPO);
+
+        List<String> idList = datasetPage.getRecords().stream().map(DatasetPO::getId).collect(Collectors.toList());
+        Map<String, List<TagPO>> datasetId2TagMap = tagMapper.selectListByIds(idList).stream().collect(Collectors.groupingBy(TagPO::getDatasetId));
+        return ODIPage.buildResult(datasetPage, l -> fromPO(l, datasetId2TagMap.get(l.getId())));
     }
 
 
@@ -61,12 +70,13 @@ public class DatasetRepositoryImpl implements DatasetRepository {
         }
 
         DatasetPO po = optionalDatasetPO.get();
-        return Optional.of(fromPO(po));
+        List<TagPO> tagPOS = tagMapper.selectListByIds(Collections.singletonList(po.getId()));
+        return Optional.of(fromPO(po, tagPOS));
 
     }
 
     private DatasetPO toPO(Dataset dataset) {
-        return new DatasetPO(dataset.getId(), dataset.getName(), dataset.getHomepage().toString(),
+        return new DatasetPO(dataset.getId(), dataset.getInsertTime(), dataset.getUpdateTime(), dataset.getName(), dataset.getHomepage().toString(),
                 dataset.getDescription(), dataset.getOwnerName(),
                 dataset.getCreatorUserId(), dataset.getCreatorOrgId());
     }
@@ -78,11 +88,17 @@ public class DatasetRepositoryImpl implements DatasetRepository {
         return datasetVOPage;
     }
 
-    private Dataset fromPO(DatasetPO po) {
+    private Dataset fromPO(DatasetPO po, List<TagPO> tagPOs) {
         HttpURL homepage = po.getHomepage() == null ? null : new HttpURL(po.getHomepage());
         HttpURL readmeLink = po.getReadmeLink() == null ? null : new HttpURL(po.getReadmeLink());
+        Set<DatasetTag> datasetTags = Optional.ofNullable(tagPOs).map(list -> list.stream().map(tag -> new DatasetTag(tag.getTagName())).collect(Collectors.toSet())).orElse(new HashSet<>());
         return new Dataset(po.getId(), po.getName(), homepage, po.getDescription(), readmeLink,
-                po.getInsertTime(), po.getUpdateTime(), po.getOwnerName(), po.getCreatorUserId(), po.getCreatorOrgId());
+                po.getInsertTime(), po.getUpdateTime(), po.getOwnerName(), po.getCreatorUserId(), po.getCreatorOrgId(), datasetTags);
+    }
+
+
+    private Set<TagPO> toTagPOs(Dataset dataset) {
+        return dataset.getTags().stream().map(s -> new TagPO(dataset.getId(), s.getName())).collect(Collectors.toSet());
     }
 
 }

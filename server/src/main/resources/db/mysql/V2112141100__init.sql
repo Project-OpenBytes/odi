@@ -63,4 +63,6 @@ CREATE TABLE IF NOT EXISTS `dataset`
     CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_unicode_ci
     ROW_FORMAT = Dynamic;
-alter table user change id id int AUTO_INCREMENT;
+alter table dataset change id int AUTO_INCREMENT;
+alter table dataset
+    add unique index dataset_name (name);

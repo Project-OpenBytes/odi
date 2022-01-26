@@ -24,8 +24,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.net.MalformedURLException;
-
 @Getter
 @ToString
 @EqualsAndHashCode(of = "url")
@@ -40,9 +38,11 @@ public class HttpURL {
     private final String url;
 
     public HttpURL(String url) {
-        if (!this.isUrl(url)) {
-            throw new BizException(CodeAndMessage.argsIllegal, "Not URL.");
+        if (StrUtil.isBlank(url)) {
+            this.url = "";
+            return;
         }
+
         if (!url.startsWith(HTTPS_PREFIX) && !url.startsWith(HTTP_PREFIX)) {
             throw new BizException(CodeAndMessage.argsIllegal, "Not HTTP URL.");
         }
@@ -51,17 +51,4 @@ public class HttpURL {
         }
         this.url = url;
     }
-
-    public boolean isUrl(CharSequence value) {
-        if (StrUtil.isBlank(value)) {
-            return false;
-        }
-        try {
-            new java.net.URL(StrUtil.str(value));
-        } catch (MalformedURLException e) {
-            return false;
-        }
-        return true;
-    }
-
 }

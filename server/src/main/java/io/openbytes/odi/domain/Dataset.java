@@ -16,11 +16,16 @@
 
 package io.openbytes.odi.domain;
 
+import cn.hutool.core.util.StrUtil;
+import io.openbytes.odi.BizException;
+import io.openbytes.odi.CodeAndMessage;
 import io.openbytes.odi.domain.common.HttpURL;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.Set;
 
 @Getter
 @ToString
@@ -31,7 +36,7 @@ public class Dataset {
 
     private Instant insertTime;
 
-    private Instant updatedTime;
+    private Instant updateTime;
 
     private String name;
 
@@ -54,32 +59,40 @@ public class Dataset {
 
     private Integer downloadCount;
 
+    private final Set<DatasetTag> tags;
+
+
+    public Dataset(String name, HttpURL homepage, String description, HttpURL readmeLink, String ownerName, String creatorUserId, String creatorOrgId) {
+        this(null, name, homepage, description, readmeLink, null, null, ownerName, creatorUserId, creatorOrgId);
+    }
+
+
     public Dataset(String name, HttpURL homepage, String description, HttpURL readmeLink, Instant insertTime, Instant updatedTime,
                    String ownerName, String creatorUserId, String creatorOrgId) {
-        this.name = name;
-        this.homepage = homepage;
-        this.description = description;
-        this.readmeLink = readmeLink;
-        this.insertTime = insertTime;
-        this.updatedTime = updatedTime;
-        this.OwnerName = ownerName;
-        this.creatorUserId = creatorUserId;
-        this.creatorOrgId = creatorOrgId;
+        this(null, name, homepage, description, readmeLink, insertTime, updatedTime, ownerName, creatorUserId, creatorOrgId, Collections.emptySet());
     }
 
     public Dataset(String id, String name, HttpURL homepage, String description, HttpURL readmeLink, Instant insertTime, Instant updatedTime,
                    String ownerName, String creatorUserId, String creatorOrgId) {
+        this(id, name, homepage, description, readmeLink, insertTime, updatedTime, ownerName, creatorUserId, creatorOrgId, Collections.emptySet());
+    }
+
+    public Dataset(String id, String name, HttpURL homepage, String description, HttpURL readmeLink, Instant insertTime, Instant updatedTime,
+                   String ownerName, String creatorUserId, String creatorOrgId, Set<DatasetTag> tags) {
+        if (StrUtil.isBlank(name)) {
+            throw new BizException(CodeAndMessage.argsIllegal, "`name` can not be blank!");
+        }
         this.id = id;
         this.name = name;
         this.homepage = homepage;
         this.description = description;
         this.readmeLink = readmeLink;
         this.insertTime = insertTime;
-        this.updatedTime = updatedTime;
+        this.updateTime = updatedTime;
         this.OwnerName = ownerName;
         this.creatorUserId = creatorUserId;
         this.creatorOrgId = creatorOrgId;
+        this.tags = tags;
     }
-
 
 }

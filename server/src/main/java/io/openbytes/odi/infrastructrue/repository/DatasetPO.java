@@ -20,6 +20,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @TableName("dataset")
 @Getter
 @Setter
@@ -36,9 +38,13 @@ public class DatasetPO extends BasePO {
     private Integer starCount;
     private Integer downloadCount;
 
+    public DatasetPO() {
+    }
 
-    public DatasetPO(String id, String name, String homepage, String description, String ownerName, String creatorUserId, String creatorOrgId) {
+    public DatasetPO(String id, Instant insertTime, Instant updateTime, String name, String homepage, String description, String ownerName, String creatorUserId, String creatorOrgId) {
         this.id = id;
+        this.insertTime = insertTime;
+        this.updateTime = updateTime;
         this.name = name;
         this.homepage = homepage;
         this.description = description;
@@ -46,5 +52,4 @@ public class DatasetPO extends BasePO {
         this.creatorUserId = creatorUserId;
         this.creatorOrgId = creatorOrgId;
     }
-
 }

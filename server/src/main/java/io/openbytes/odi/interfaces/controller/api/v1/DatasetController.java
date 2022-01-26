@@ -45,7 +45,7 @@ public class DatasetController {
 
     @ApiOperation(value = "Get an dataset by id", notes = "When id not exist, return empty.")
     @GetMapping("/{id}")
-    public Result<Optional<DatasetVO>> getById(String id) {
+    public Result<Optional<DatasetVO>> getById(@PathVariable String id) {
         if (id == null) {
             id = "";
         }

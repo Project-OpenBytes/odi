@@ -21,6 +21,7 @@ import io.openbytes.odi.BizException;
 import io.openbytes.odi.CodeAndMessage;
 import io.openbytes.odi.domain.UserToken;
 import io.openbytes.odi.domain.repository.UserTokenRepository;
+import io.openbytes.odi.domain.user.User;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -47,5 +48,9 @@ public class TokenService {
         UserToken oAuthToken = new UserToken(userId);
         tokenRepository.save(oAuthToken);
         return oAuthToken;
+    }
+
+    public User getUserByToken(String odiToken) {
+        return new User();
     }
 }
