@@ -16,15 +16,16 @@ from functools import partial
 
 import click
 
+from odi.client import ODI
 from odi.util import ui
 
 
 @click.group(cls=ui.CLIGroup, context_settings={"help_option_names": ("-h", "--help")})
 @click.option(
-    "-t", "--token", type=str, default="", help="ODI user oauth token file path"
+    "-t", "--token", type=str, is_flag=True, default="", help="Specify ODI user token file"
 )
 @click.option(
-    "-c", "--config", type=str, default="", help="ODI config file path"
+    "-c", "--config", type=str, is_flag=True, default="", help="Specify ODI config file"
 )
 @click.pass_context
 def cli(ctx: ui.Context, token: str, config: str) -> None:
@@ -32,13 +33,15 @@ def cli(ctx: ui.Context, token: str, config: str) -> None:
 
     from odi.cli.command import implement_cli
 
+    implement_cli(ctx, token, config)
+
 
 command = partial(cli.command, cls=ui.Command)
 
 
 @cli.group(cls=ui.CLIGroup, short_help="Login, logout, show user info")
 @click.pass_obj
-def auth(ctx: str) -> None:
+def auth(obj: ODI) -> None:
     """Login, logout, and show current user information."""
     pass
 
@@ -48,7 +51,7 @@ auth_command = partial(auth.command, cls=ui.Command)
 
 @auth_command(short_help="Login to ODI")
 @click.pass_obj
-def login(ctx: str) -> None:
+def login(obj: ODI) -> None:
     """Login to ODI through GitHub."""
 
     from odi.cli.command import implement_login
@@ -58,7 +61,7 @@ def login(ctx: str) -> None:
 
 @auth_command(short_help="Logout from ODI")
 @click.pass_obj
-def logout(ctx: str) -> None:
+def logout(odj: ODI) -> None:
     """Logout from ODI and remove the local cache."""
 
     from odi.cli.command import implement_logout
@@ -68,7 +71,7 @@ def logout(ctx: str) -> None:
 
 @auth_command(short_help="User info")
 @click.pass_obj
-def info(ctx: str) -> None:
+def info(obj: ODI) -> None:
     """Show current user information."""
 
     from odi.cli.command import implement_info
@@ -76,12 +79,12 @@ def info(ctx: str) -> None:
     implement_info()
 
 
-@command(short_help="Create empty dataset")
+@command(short_help="Initialize empty dataset")
 @click.pass_obj
-def create(ctx: str) -> None:
-    """Create an empty dataset from template."""
+def init(obj: ODI) -> None:
+    """Initialize an empty dataset from template."""
 
-    print("create")
+    print("init")
 
 
 @command(short_help="Pull dataset to local")
@@ -90,7 +93,7 @@ def create(ctx: str) -> None:
     "-p", "--path", type=str, default="", help="Path to pull the dataset"
 )
 @click.pass_obj
-def pull(ctx: str, dataset: str, path: str) -> None:
+def pull(obj: ODI, dataset: str, path: str) -> None:
     """Pull a dataset from ODI to local."""
 
     from odi.cli.command import implement_pull
@@ -98,20 +101,23 @@ def pull(ctx: str, dataset: str, path: str) -> None:
     implement_pull(dataset, path)
 
 
-@command(short_help="Push dataset to ODI")
+@command(short_help="Submit dataset to ODI")
 @click.pass_obj
-def push(ctx: str) -> None:
-    """Push a local dataset to ODI."""
+def submit(obj: ODI) -> None:
+    """Push a local dataset to ODI and submit a new pull request."""
 
-    print("push")
+    print("submit")
 
 
 @command(short_help="Search dataset")
 @click.argument("keyword", type=str)
 @click.pass_obj
-def search(ctx: str) -> None:
+def search(obj: ODI, keyword: str) -> None:
     """Search a dataset from ODI."""
-    print("search")
+
+    from odi.cli.command import implement_search
+
+    implement_search(obj, keyword)
 
 
 @command(short_help="CLI version")

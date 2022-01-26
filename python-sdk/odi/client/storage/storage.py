@@ -12,8 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import math
 from abc import ABCMeta, abstractmethod
-from typing import Any
+from typing import Any, Optional
 
 
 class _StorageInterface(metaclass=ABCMeta):
@@ -22,7 +23,7 @@ class _StorageInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def download(self) -> Any:
+    def download(self, **kwargs) -> Any:
         raise NotImplementedError
 
 
@@ -30,5 +31,25 @@ class Storage(_StorageInterface):
     def upload(self) -> Any:
         return None
 
-    def download(self) -> Any:
+    def download(self, **kwargs) -> Any:
         return None
+
+    @classmethod
+    def _size_convert(cls, *, size: int, origin: Optional[str] = "B", target: str) -> int:
+        size_map = {
+            "B": 1,
+            "KB": 2,
+            "MB": 3,
+            "GB": 4,
+            "TB": 5
+        }
+
+        origin, target = origin.upper(), target.upper()
+        if (origin or target) not in size_map or origin == target:
+            return size
+
+        coefficient = size_map[target] - size_map[origin]
+        val = 1024 ** abs(coefficient)
+        new_size = size / val if coefficient > 0 else size * val
+
+        return math.ceil(new_size)

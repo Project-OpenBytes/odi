@@ -19,4 +19,4 @@ from odi.client import ODI
 
 
 def implement_cli(ctx: ui.Context, token_file: str, config_file: str) -> None:
-    ctx.obj = ODI(oauth_token_file=token_file, config_file=config_file)
+    ctx.obj = ODI(user_token_file=token_file, config_file=config_file)

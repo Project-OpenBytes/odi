@@ -12,9 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from odi.cli.command.auth import implement_login, implement_logout, implement_info
+from odi.cli.command.auth import implement_info, implement_login, implement_logout
 from odi.cli.command.cli import implement_cli
 from odi.cli.command.pull import implement_pull
+from odi.cli.command.search import implement_search
 from odi.cli.command.version import implement_version
 
 __all__ = [
@@ -23,5 +24,6 @@ __all__ = [
     "implement_login",
     "implement_logout",
     "implement_info",
-    "implement_pull"
+    "implement_pull",
+    "implement_search"
 ]

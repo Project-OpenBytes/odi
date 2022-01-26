@@ -35,10 +35,6 @@ class _BaseRequest:
     def make_url(cls, **kwargs: Any) -> str:
         raise NotImplementedError
 
-    @classmethod
-    def api_version(cls) -> str:
-        return cls._API_VERSION
-
 
 class _UserRequest(_BaseRequest):
     _REQUEST_PREFIX = f"{_BaseRequest._REQUEST_PREFIX}/users"
@@ -81,11 +77,19 @@ class _RegisterByGithubDeviceCodeRequest(_UserRequest):
 
 
 class _PullDatasetByNameRequest(_DatasetRequest):
-    METHOD = _HTTPMethod.POST
+    METHOD = _HTTPMethod.GET
 
     @classmethod
     def make_url(cls, **kwargs: Any) -> str:
         return f"{cls._REQUEST_PREFIX}/{kwargs['dataset']}/files/"
+
+
+class _ListDatasetRequest(_DatasetRequest):
+    METHOD = _HTTPMethod.GET
+
+    @classmethod
+    def make_url(cls, **kwargs: Any) -> str:
+        return f"{cls._REQUEST_PREFIX}?keyword={kwargs['keyword']}&index={kwargs['index']}&size={kwargs['size']}"
 
 
 class Request:
@@ -99,6 +103,7 @@ class Request:
     RegisterByGithubDeviceCode = _RegisterByGithubDeviceCodeRequest
 
     # dataset
+    ListDataset = _ListDatasetRequest
     PullDatasetByName = _PullDatasetByNameRequest
 
 

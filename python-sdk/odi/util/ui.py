@@ -13,9 +13,10 @@
 #  limitations under the License.
 
 from contextlib import contextmanager
+from enum import Enum
 from gettext import gettext
 from typing import Any, Iterator, Optional
-
+from tqdm import tqdm
 import click
 
 _OPTION_HELP_MESSAGE = "Show help for command and exit"
@@ -120,3 +121,37 @@ class CLIGroup(click.Group):
         self.format_commands(ctx, formatter)
         self.format_options(ctx, formatter)
         self.format_epilog(ctx, formatter)
+
+
+class Color(Enum):
+    BLUE = "\033[94m"
+    BOLD = "\033[1m"
+    DARKCYAN = "\033[36m"
+    END = "\033[0m"
+    PINK = "\033[95m"
+    RED = "\033[91m"
+    UNDERLINE = "\033[4m"
+    YELLOW = "\033[93m"
+
+
+def format_long_str_with_ellipsis(text: str, limit: int) -> str:
+    if not text or len(text) <= limit:
+        return text
+
+    if len(text) <= 3 or limit <= 3:
+        return text
+
+    return f"{text[0: limit - 3]}..."
+
+
+class Tqdm(tqdm):
+    def __init__(
+            self,
+            *,
+            desc: str,
+            total: int,
+            leave: bool,
+            position: int,
+            bar_format: str
+    ) -> None:
+        super().__init__(desc=desc, total=total, leave=leave, position=position, bar_format=bar_format)
