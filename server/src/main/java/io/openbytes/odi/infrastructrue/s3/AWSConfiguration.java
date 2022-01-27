@@ -19,8 +19,10 @@ package io.openbytes.odi.infrastructrue.s3;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +39,9 @@ public class AWSConfiguration {
     @Value("${cloud.aws.region}")
     private String region;
 
+    @Value("${cloud.aws.s3.authType}")
+    private String authType;
+
     @Bean
     public BasicAWSCredentials basicAWSCredentials() {
         return new BasicAWSCredentials(accessKey, secretKey);
@@ -44,8 +49,33 @@ public class AWSConfiguration {
 
     @Bean
     public AmazonS3 amazonS3Client(AWSCredentials awsCredentials) {
+        if (AuthType.IAM == AuthType.of(authType)) {
+            return AmazonS3ClientBuilder.standard().withCredentials(InstanceProfileCredentialsProvider.getInstance()).build();
+        }
+
         return AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .withRegion(region).build();
     }
+
+    @AllArgsConstructor
+    public enum AuthType {
+        IAM("IAM"),    // iam is auth by aws iam policy
+        BASIC("BASIC"); // basic is auth by accessKey and secret
+
+        String type;
+
+        public static AuthType of(String type) {
+            AuthType[] values = AuthType.values();
+            for (AuthType authType : values) {
+                if (authType.type.equals(type)) {
+                    return authType;
+                }
+            }
+
+            return null;
+        }
+    }
+
+
 }
