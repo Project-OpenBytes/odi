@@ -17,11 +17,16 @@
 package io.openbytes.odi.application;
 
 import cn.hutool.core.util.StrUtil;
+import io.openbytes.odi.BizException;
+import io.openbytes.odi.CodeAndMessage;
 import io.openbytes.odi.domain.storage.ListFilesResponse;
 import io.openbytes.odi.domain.storage.Storage;
+import io.openbytes.odi.infrastructrue.s3.S3PutPolicy;
+import io.openbytes.odi.interfaces.vo.DatasetVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Optional;
 
 @Slf4j(topic = "metricsLog")
@@ -29,6 +34,9 @@ import java.util.Optional;
 public class DatasetFileService {
 
     private final Storage storage;
+
+    @Resource
+    private DatasetService datasetService;
 
     public DatasetFileService(Storage storage) {
         this.storage = storage;
@@ -43,5 +51,20 @@ public class DatasetFileService {
         // append suffix
         datasetName = StrUtil.addSuffixIfNot(datasetName, "/");
         return Optional.of(storage.ListDatasetFiles(datasetName, marker, maxKeys));
+    }
+
+    public S3PutPolicy getUploadPermission(String datasetName) {
+        // todo check dataset
+        if (StrUtil.isEmpty(datasetName)) {
+            throw new BizException(CodeAndMessage.argsIllegal, "datasetName is empty");
+        }
+
+        // check this dataset name exist
+        Optional<DatasetVO> existDataset = datasetService.getByName(datasetName);
+        existDataset.ifPresent(l -> {
+            throw new BizException(CodeAndMessage.doSuccess, String.format("current datasetName %s exists in db %s", datasetName, existDataset.get().name));
+        });
+
+        return storage.GetPutPermission(datasetName);
     }
 }

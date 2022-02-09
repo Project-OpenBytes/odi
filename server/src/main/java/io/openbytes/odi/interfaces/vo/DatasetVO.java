@@ -33,8 +33,8 @@ public class DatasetVO {
     public String ownerName;
     public String creatorUserId;
     public String creatorOrgId;
-    public Integer viewCount;
     public Integer starCount;
+    public Integer viewCount;
     public Integer downloadCount;
     public Set<DatasetTag> tags;
 

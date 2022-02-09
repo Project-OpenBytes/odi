@@ -20,6 +20,7 @@ import io.openbytes.odi.application.DatasetFileService;
 import io.openbytes.odi.application.DatasetService;
 import io.openbytes.odi.domain.storage.ListFilesResponse;
 import io.openbytes.odi.infrastructrue.ODIPage;
+import io.openbytes.odi.infrastructrue.s3.S3PutPolicy;
 import io.openbytes.odi.interfaces.Result;
 import io.openbytes.odi.interfaces.ro.ListDatasetRO;
 import io.openbytes.odi.interfaces.vo.DatasetVO;
@@ -69,7 +70,7 @@ public class DatasetController {
         return Result.ok(datasetFileService.listFiles(dataset, marker, maxKeys));
     }
 
-    @GetMapping(value = "")
+    @GetMapping()
     public Result<ODIPage<DatasetVO>> list(@RequestParam(required = false) @ApiParam(value = "query key param(query name and tag)", required = false) String keyword,
                                            @RequestParam(required = false, defaultValue = "1") @ApiParam(value = "page number", required = false) Integer index,
                                            @RequestParam(required = false, defaultValue = "128") @ApiParam(value = "page size", required = false) Integer size
@@ -82,5 +83,19 @@ public class DatasetController {
         //queryRO.setOrderFields(orderFields);
 
         return Result.ok(datasetService.listDatasetsByQuery(queryRO));
+    }
+
+    /**
+     * @param dataset dataset name
+     * @return
+     */
+    @ApiOperation(value = "Get dataset upload file permission")
+    @GetMapping("/{dataset}/files/upload")
+    public Result<S3PutPolicy> getDatasetUploadPermission(@PathVariable String dataset) {
+        //queryRO.setOrderFields(orderFields);
+        if (dataset == null) {
+            dataset = "";
+        }
+        return Result.ok(datasetFileService.getUploadPermission(dataset));
     }
 }
