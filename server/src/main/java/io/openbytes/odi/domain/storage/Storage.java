@@ -16,6 +16,8 @@
 
 package io.openbytes.odi.domain.storage;
 
+import io.openbytes.odi.infrastructrue.s3.S3PutPolicy;
+
 import java.util.List;
 import java.util.Map;
 
@@ -45,4 +47,6 @@ public interface Storage {
      * @return
      */
     Map<String, String> GetUrls(List<String> keys);
+
+    S3PutPolicy GetPutPermission(String datasetName);
 }

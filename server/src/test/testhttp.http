@@ -10,12 +10,6 @@ GET http://localhost:9876/api/v1/datasets?keyword=n
 GET http://localhost:9876/api/v1/datasets/MINIST/files
 Accept: application/json
 
-
-### GET request with parameter
-GET http://47.103.90.26:9876/health/check
-Accept: application/json
-
-
 ### 1. request github user
 POST https://github.com/login/device/code
 Content-Type: application/json
@@ -51,3 +45,15 @@ Authorization: token
 ### odi process
 ### 1. request github user
 GET http://localhost:9876/api/v1/login/github/device/code
+
+### odi process
+### 1. request github user
+GET http://localhost:9876/api/v1/datasets/MNISTTEST/files/upload
+
+### GET request with parameter
+GET http://47.103.90.26:9876/health/check
+Accept: application/json
+
+### GET request with parameter
+GET http://47.103.90.26:9876/api/v1/datasets/1
+Accept: application/json
