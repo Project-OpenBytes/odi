@@ -11,3 +11,23 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+import re
+
+
+class Dataset:
+    @classmethod
+    def is_valid_dataset_name(cls, dataset: str) -> bool:
+        """
+        Check if a dataset name is valid.
+
+        Name rule:
+            1. start with alphabet
+            2. only contains alphabets, numbers, _ and -
+            3. 2 <= length <= 18
+
+        :param dataset: dataset name
+        :return: `True` if it is valid, `False` otherwise
+        """
+        res = re.search(r"^[A-Za-z][A-Za-z0-9-_]{1,17}$", dataset)
+        return True if res else False

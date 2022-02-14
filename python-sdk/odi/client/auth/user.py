@@ -11,3 +11,32 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+class User:
+    def __init__(
+            self,
+            id_: str,
+            nickname: str,
+            username: str,
+            email: str
+    ) -> None:
+        self._id = id_
+        self._nickName = nickname
+        self._userName = username
+        self._email = email
+
+    @property
+    def id(self) -> str:
+        return self._id
+
+    @property
+    def nickname(self) -> str:
+        return self._nickName
+
+    @property
+    def username(self) -> str:
+        return self._userName
+
+    @property
+    def email(self) -> str:
+        return self._email

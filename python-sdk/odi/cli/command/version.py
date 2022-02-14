@@ -11,3 +11,11 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+import click
+
+from odi import __version__
+
+
+def implement_version() -> None:
+    click.echo(__version__)

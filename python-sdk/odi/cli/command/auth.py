@@ -11,3 +11,21 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+from odi.client import ODI
+
+
+def implement_login() -> None:
+    _login_from_github()
+
+
+def implement_logout() -> None:
+    print("logout")
+
+
+def implement_info() -> None:
+    print("info")
+
+
+def _login_from_github() -> None:
+    ODI().login()
