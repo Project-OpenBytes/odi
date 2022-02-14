@@ -216,7 +216,7 @@ public class S3Storage implements Storage {
     private static final String AWS4_REQUEST = "aws4_request";
     private static final String PROTOCOL = "https";
     private static final String SERVICE = "s3";
-    private static final String ENDPOINT_SUFFIX = "amazonaws.com/";
+    private static final String ENDPOINT_SUFFIX = "amazonaws.com";
     private static final String HTTP_SUCCESS_CODE = "200";
 
     /**
