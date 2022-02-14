@@ -57,3 +57,13 @@ Accept: application/json
 ### GET request with parameter
 GET http://47.103.90.26:9876/api/v1/datasets/1
 Accept: application/json
+
+
+### aws
+### GET request with parameter
+GET http://52.53.217.38:9876/health/check
+Accept: application/json
+
+### GET request with parameter
+GET http://52.53.217.38:9876/api/v1/datasets/MNISTTEST/files/upload
+Accept: application/json
